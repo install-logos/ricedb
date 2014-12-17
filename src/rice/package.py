@@ -13,6 +13,10 @@ TMPEXTENSION = "-tmp.zip"
 INSTALL = "install.json"
 
 class Package(object):
+  """
+  Handles downloading and installing rices for a specific package
+  Deals with all functionality concerning configurations/packages
+  """
       def __init__(self, data, old=False):
           self.data = data
           self.downloaded = False
@@ -22,35 +26,12 @@ class Package(object):
           self.program = None
           self.files = None
           self.conf_root = None
-
-          if ("Name" in self.data):
-              self.name = self.data["Name"]
-          else:
-              raise error.corruption_error("Could not determine name of package.")
-
-          if ("URL" in self.data):
-              self.url = self.data["URL"]
-          elif not old:
-              raise error.corruption_error("Could not determine URL of package.")
-
-          if ("Images" in self.data):
-              self.images = self.data["Images"]
-
-          if ("Program" in self.data):
-              self.program = self.data["Program"]
-          else:
-              raise error.corruption_error("Could not determine the program of the package")
-
-          if ("Files" in self.data):
-              self.files = self.data["Files"]
-          else:
-              raise error.corruption_error("Could not determine the files of the package")
-
-          if ("Path" in self.data):
-              self.conf_root = self.data["Path"]
-          else:
-              raise error.corruption_error("Could not determine the installation location of the package")
-
+          required_fields = ["Name", "URL", "Images", "Program", "Files", "Path"]
+          for key in required_fields:
+            value = self.data.get(key)
+            if not value:
+              raise error.corruption_error('Could not determine {} of package'.format(key))
+            setattr(self, key.lower(),value)
           self.prog_path = util.RDBDIR + self.program
           self.path = util.RBBDIR + self.program + '/'+ self.name
           self.install_file = self.path + INSTALL
