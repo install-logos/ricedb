@@ -107,7 +107,7 @@ elif len(args.rice) == 1:
 else:
     print("You must run rice.py with inputs. Try rice.py -h if you're unsure how to use the program")
     exit()
-print(search_return)
+
 if search_return is not None:
     selected_packs, render_success, render_message = render.select_options(search_return)
 
@@ -124,7 +124,7 @@ if not selected_packs is None and render_success:
             program_name = args.sync[0]
         else:
             program_name = args.rice[0]
-        vanilla_files = data.get(program_name, None)['Files']
+        vanilla_files = data.get(program_name)['Files']
     download_success, download_message = download.download(github_link, program_name, rice_name)
     if not download_success:
         print(download_message)

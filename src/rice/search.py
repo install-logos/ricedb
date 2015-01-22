@@ -14,7 +14,7 @@ def get_software(software_name):
     data = json.load(json_data)
     json_data.close()
 
-    target = data.get(software_name, None)
+    target = data.get(software_name)
 
     return target
 
