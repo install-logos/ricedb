@@ -1,5 +1,5 @@
 #!/bin/env python
-from rice import search, render, download, swapout, swapin
+from rice import search, new_rice
 import argparse
 import json
 
@@ -82,31 +82,28 @@ parser.add_argument(
     """
 )
 
-search_return = []
-json_data = open('conf/index.json')
-data = json.load(json_data)
-json_data.close()
-selected_pack = None
 args = parser.parse_args()
 if args.sync:
     # -S option used,
     search_return = search.search_packages(args.sync[0],
                                            args.sync[1],
                                            search.get_package)
-
+    new_rice.install(search_return)
 elif len(args.rice) > 1:
     # Program name + keyword specified
     search_return = search.search_packages(args.rice[0],
                                            args.rice[1:],
                                            search.search_keywords)
-
+     new_rice.install(search_return)
 elif len(args.rice) == 1:
     # Only the program name is mentionned
     # Trying to get the package list of the specified program name
     search_return = search.get_software(args.rice[0])
+    new_rice.install(search_return)
 else:
     print("You must run rice.py with inputs. Try rice.py -h if you're unsure how to use the program")
     exit()
+<<<<<<< HEAD
 
 if search_return is not None:
     selected_packs, render_success, render_message = render.select_options(search_return)
@@ -145,3 +142,5 @@ else:
     print(render_message)
     exit()
 print("Your rice for " + program_name + " has been succesfully installed. Reload the program to check it out")
+=======
+>>>>>>> cc6c080476df1a9698a9f6fa0d1b9102ebacc0b9
