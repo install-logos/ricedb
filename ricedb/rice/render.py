@@ -7,7 +7,7 @@ import curses
 import curses.textpad
 import urllib.request
 import os
-from rice import query, w3m, util
+from . import query, w3m, util
 import ast
 
 SEARCHBAR_OFFSET = 2

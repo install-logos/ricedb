@@ -1,4 +1,4 @@
-from rice import error
+from . import error
 import json
 class Package(object):
   def __init__(self, data):

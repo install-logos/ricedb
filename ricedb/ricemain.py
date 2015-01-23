@@ -1,7 +1,7 @@
 #!/bin/env python
 import json
 import os
-from rice import package, query, render, util, installer, error
+from ricedb.rice import package, query, render, util, installer, error
 import argparse
 
 class Rice(object):

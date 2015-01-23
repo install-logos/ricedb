@@ -7,7 +7,7 @@ import json
 import os
 import urllib.request
 import zipfile
-from rice import error, util, render
+from . import error, util, render
 
 TMPEXTENSION = "-tmp.zip"
 INSTALL = "install.json"
