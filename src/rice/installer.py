@@ -25,12 +25,13 @@ class Installer(object):
         self.prog_path = util.RDBDIR + self.program + '/'
         self.path = self.prog_path + self.name + '/'
         if url == "":
-            self.check_files
+            self.check_files()
 
     def check_files(self): 
         self.local = True
         self.install_file = self.path + INSTALL
-        if not (os.path.exists(install_file) and os.path.isfile(install_file)):
+        print(self.path)
+        if not (os.path.exists(self.install_file) and os.path.isfile(self.install_file)):
             raise error.corruption_error("Package has no install file.")
         with open(self.install_file) as f:
             try:
@@ -52,20 +53,20 @@ class Installer(object):
             raise error.unentered_data_error("This is a local rice, it cannot be downloaded")
         if not (os.path.exists(util.RDBDIR) and os.path.isdir(util.RDBDIR)):
             os.mkdir(util.RDBDIR)
-        if not (os.path.exists(prog_path)):
-            os.mkdir(prog_path)
-        if (os.path.exists(path) and os.path.isdir(path)):
-            raise error.Error("Path ("+path+") already exists.")
+        if not (os.path.exists(self.prog_path)):
+            os.mkdir(self.prog_path)
+        if (os.path.exists(self.path) and os.path.isdir(self.path)):
+            raise error.Error("Path ("+self.path+") already exists.")
         # Download the file
         temp_file = self.prog_path + TMPEXTENSION
         urllib.request.urlretrieve(self.url, temp_file)
         # Check if the file downloaded successfully
-        if not (os.path.exists(temp_file) and zipfile.is_zipfile(temp_file)):
+        if not (os.path.exists(temp_file) or not zipfile.is_zipfile(temp_file)):
             raise error.corruption_error("The download is corrupted. Please verify the integrity of your rice_dB index file.")
         # Unzip the file
-        z = zipfile.zip_file(temp_file)
+        z = zipfile.ZipFile(temp_file)
         for name in z.namelist():
-            z.extract(name, path)
+            z.extract(name, self.path)
         os.remove(temp_file)
         self.check_files()
 
