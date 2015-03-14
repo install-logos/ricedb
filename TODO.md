@@ -13,7 +13,8 @@
 ##CLIENT-UL Interactions:
 1. Setup packaging standards.
      ie. each repo must contain pictures of rice and a file outlining required dependancies that the ricer program can parse, in addition to breif descriptions, as from pacman.
-CLIENT -> SERVER UL Interactions:
+
+##CLIENT -> SERVER UL Interactions:
 1. Account creation to verify that you are a human not a bot - to upload a config you must login, but you don't have to tie the upload to your account
 2. Account verification - need to securely process requests from clients to upload
 3. Client upload verification - ensure this isn't a duplicate or plagiarised or otherwise spam
