@@ -2,7 +2,6 @@ import json
 from pprint import pprint
 
 def search(json_file,target_val,field):
-    target_id = 10
     json_data = open(json_file)
 
     data = json.load(json_data)

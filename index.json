@@ -1,46 +1,11 @@
- {  
-    "i3":[  
-          {  
-                   "Name":"A",
-                   "Description":"...",
-                   "Images":[  
-                               "1.jpg",
-                               "2.jpg",
-                               "3.jpg"
-                            ],
-                   "Github Repository":"..."
-                },
-          {  
-                   "Name":"B",
-                   "Description":"...",
-                   "Images":[  
-                               "1.jpg",
-                               "2.jpg",
-                               "3.jpg"
-                            ],
-                   "Github Repository":"..."
-                }
-       ],
-    "shittywm":[  
-          {  
-                   "Name":"A",
-                   "Description":"...",
-                   "Images":[  
-                               "1.jpg",
-                               "2.jpg",
-                               "3.jpg"
-                            ],
-                   "Github Repository":"..."
-                },
-          {  
-                   "Name":"B",
-                   "Description":"...",
-                   "Images":[  
-                               "1.jpg",
-                               "2.jpg",
-                               "3.jpg"
-                            ],
-                   "Github Repository":"..."
-                }
-       ]
- }
+[{  
+	"Name":"i3",
+    "Description":"A superior tiling WM",
+    "json-index":"index-i3.json"
+},
+{  
+	"Name":"B",
+    "Description":"An inferior tiling WM",
+    "json-index":"index-shittywm.json"
+}
+]
