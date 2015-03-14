@@ -1,7 +1,7 @@
 #TODO:
 ##Client-DL Interactions:
 1. json parser
-2. check installed software and save to ~/.ricebowl/config.yml
+2. (@potsmodern)check installed software and save to ~/.ricebowl/config.yml
 3. image gallery viewer
 4. backup files - the program will basically have easy theme switching so by install
     use a .ricebowl/[configname]-ricedb folder to store alternative themes not being used
