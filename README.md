@@ -5,9 +5,9 @@
       width="775">
 </sub>
 </h1>
-RiceDB will be a universal configuration file manager designed to make it easy to obtain configurations for any application that fit your individual needs.
+<strong>RiceDB</strong> will be a universal configuration file manager designed to make it easy to obtain configurations for any application that fit your individual needs.
 
-RiceDB seeks to follow the Arch Way, staying simple, open, and elegant.
+<strong>RiceDB</strong> seeks to follow the <strong>Arch Way</strong>, staying simple, open, and elegant.
 
 Planned features include: CLI configuration preview, github based configuration repositories, a web front end for additional access.
 
