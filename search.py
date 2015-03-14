@@ -11,6 +11,6 @@ def search(json_file,target_val,field):
 
     for obj in data:
         if obj[field] == target_val:
-            return obj
+            return True
 
-    return 'Not Found'
+    return False
