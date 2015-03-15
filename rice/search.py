@@ -13,10 +13,32 @@ def search_software(software_name):
     data = json.load(json_data)
     json_data.close()
 
-    target = data.get(software_name, False)
+    target = data.get(software_name, None)
 
     return target
 # Searches for a config name within a software. Returns either software_fail, rice_fail, or success depending on what it fines.
+
+
+def search_keywords(packages, keywords):
+    """
+    Return the bests packages according to the specified keyword
+    """
+
+    packagesRelevance = {}
+
+    for package in packages:
+        for keyword in keywords:
+            nameCount = packages[package]["Name"].count(keyword)
+            descriptionCount = packages[package]["Description"].count(keyword)
+            bothSum = nameCount + descriptionCount
+
+            if bothSum:
+                # We don't want to put non relevant packages in
+                # packagesRelevance
+                packagesRelevance[package] = bothSum
+
+    return sorted(packagesRelevance, key=packagesRelevance.__getitem__,
+                  reverse=True)
 
 
 def search_rice(software_name, rice_name):
@@ -29,17 +51,18 @@ def search_rice(software_name, rice_name):
     indicating succesful matches of both the software and configuration names
     """
 
+    rice_hits = None
     queryResult = search_software(software_name)
-    if queryResult:
+
+    if queryResult is not None:
         # We won't search for a specific package if the user don't specified
         # a package
-        rice_hits = queryResult['packages'].get(rice_name, False)
+        rice_hits = queryResult['packages'].get(rice_name, None)
+        if rice_hits is None:
+            # Launch fuzzy find
+            rice_hits = search_keywords(queryResult['packages'], rice_name)
+            if not rice_hits:
+                # If nothing was found during the research
+                rice_hits = None
 
-    else:
-        return "software_fail"
-
-    if rice_hits:
-        return ("success", rice_hits)
-
-    else:
-        return "rice_fail"
+    return rice_hits
