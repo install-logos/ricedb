@@ -1,6 +1,7 @@
 import json
 #PLACE HOLDER ALGORITHM, TO BE REPLACED
 def lev_dist(first, second):
+    """Performs a search of the closeness of two words, specifically how many revisions would need to be done to obtain one word given the other. This is used to gauge accuracy of querys to the json"""
     if len(first) > len(second):
         first, second = second, first
     if len(second) == 0:
@@ -22,7 +23,8 @@ def lev_dist(first, second):
             distance_matrix[i][j] = min(insertion, deletion, substitution)
     return distance_matrix[first_length-1][second_length-1]
 
-def search_index(json_file,target_val,field):
+def __search(json_file, target_val, field):
+    """Performs a search of a json_file for a given value in a specified field, returning a boolean indicating succes or failure and a json which contains near/succesful matches """
     json_data = open(json_file)
     data = json.load(json_data)
     json_data.close()
@@ -48,3 +50,20 @@ def search_index(json_file,target_val,field):
                 if sim <= matches:
                     close_matches.update(obj)
     return (False, close_matches)
+
+def search_software(software_name):
+    """Searches index.json for a software of specified name. Returns a tuple containing a boolean value indicating whether or not a complete match was made and a json with exact or partial matches"""
+    success, hits = __search("../conf/index.json", software_name, "Name")
+    return (success, hits)
+#Searches for a config name within a software. Returns either software_fail, rice_fail, or success depending on what it fines.
+def search_rice(software_name, rice_name):
+    """Searches index.json for a software of specified name and a specific rice. Returns a string and a json file. The string will be contain the value 'software_fail', indicating a failure to match the software name, 'rice_fail', indicating a failure to match a specific rice_name, or 'success', indicating succesful matches of both the software and configuration names"""
+    success, hits = __search("../conf/index.json", software_name, "Name")
+    if success:
+        rice_success, rice_hits = __search("../conf/index-" + software_name + ".json", rice_name, "Name")
+    else:
+        return ("software_fail",hits)
+    if rice_success:
+        return ("success", rice_hits)
+    else:
+        return ("rice_fail", rice_hits)
