@@ -2,7 +2,7 @@ import json
 #PLACE HOLDER ALGORITHM, TO BE REPLACED
 
 
-def search_software(software_name):
+def get_software(software_name):
     """
     Searches index.json for a software of specified name.
     Returns a tuple containing a boolean value indicating whether
@@ -37,32 +37,32 @@ def search_keywords(packages, keywords):
                 # packagesRelevance
                 packagesRelevance[package] = bothSum
 
-    return sorted(packagesRelevance, key=packagesRelevance.__getitem__,
-                  reverse=True)
+    sortedPackages = sorted(packagesRelevance,
+                            key=packagesRelevance.__getitem__, reverse=True)
+
+    if sortedPackages:
+        res = list(map(lambda x: packages[x], sortedPackages))
+    else:
+        res = None
+
+    return res
 
 
-def search_rice(software_name, rice_name):
+def get_package(queryResult, rice_name):
+    return queryResult.get(rice_name, None)
+
+
+def search_packages(software_name, rice_name, modeFunction):
     """
-    Searches index.json for a software of specified name and a specific rice.
-    Returns a string and a json file.
-    The string will be contain the value 'software_fail',
-    indicating a failure to match the software name, 'rice_fail',
-    indicating a failure to match a specific rice_name, or 'success',
-    indicating succesful matches of both the software and configuration names
+    Searches index.json for a software of specified name and return, packages
+    according to the mode we specified in 'modeFunction'.
     """
 
     rice_hits = None
-    queryResult = search_software(software_name)
+    queryResult = get_software(software_name)
 
     if queryResult is not None:
-        # We won't search for a specific package if the user don't specified
-        # a package
-        rice_hits = queryResult['packages'].get(rice_name, None)
-        if rice_hits is None:
-            # Launch fuzzy find
-            rice_hits = search_keywords(queryResult['packages'], rice_name)
-            if not rice_hits:
-                # If nothing was found during the research
-                rice_hits = None
+        # Launch fuzzy find
+        rice_hits = modeFunction(queryResult['packages'], rice_name)
 
     return rice_hits
