@@ -30,7 +30,7 @@ def search_index(json_file,target_val,field):
     bounds = []
     close_matches = {}
 
-    with open('search.config','r') as config:
+    with open('../conf/search.config','r') as config:
         for line in config:
             if not line[0] == "#":   
                 bounds.append(line.split(' '))
