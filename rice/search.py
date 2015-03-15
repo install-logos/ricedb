@@ -29,7 +29,7 @@ def __search(data, target_val, field):
     bounds = []
     close_matches = [] 
     #print(data)
-    with open('../conf/search.config','r') as config:
+    with open('conf/search.config','r') as config:
         for line in config:
             if not line[0] == "#":   
                 bounds.append(line.split(' '))
@@ -50,7 +50,7 @@ def __search(data, target_val, field):
 
 def search_software(software_name):
     """Searches index.json for a software of specified name. Returns a tuple containing a boolean value indicating whether or not a complete match was made and a json with exact or partial matches"""
-    json_data = open("../conf/index.json")
+    json_data = open("conf/index.json")
     data = json.load(json_data)
     json_data.close()
     programs = [] 
@@ -62,7 +62,7 @@ def search_software(software_name):
 #Searches for a config name within a software. Returns either software_fail, rice_fail, or success depending on what it fines.
 def search_rice(software_name, rice_name):
     """Searches index.json for a software of specified name and a specific rice. Returns a string and a json file. The string will be contain the value 'software_fail', indicating a failure to match the software name, 'rice_fail', indicating a failure to match a specific rice_name, or 'success', indicating succesful matches of both the software and configuration names"""
-    json_data = open("../conf/index.json")
+    json_data = open("conf/index.json")
     data = json.load(json_data)
     json_data.close()
     packs = []
