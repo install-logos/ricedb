@@ -1,5 +1,4 @@
 import json
-#PLACE HOLDER ALGORITHM, TO BE REPLACED
 
 
 def get_software(software_name):
@@ -16,7 +15,6 @@ def get_software(software_name):
     target = data.get(software_name, None)
 
     return target
-# Searches for a config name within a software. Returns either software_fail, rice_fail, or success depending on what it fines.
 
 
 def search_keywords(packages, keywords):
