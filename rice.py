@@ -3,7 +3,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='RiceDB cmdline cli')
 parser.add_argument('program', help='program to rice')
-parser.add_argument('rice', help='rice package')
+parser.add_argument('rice', nargs='?', help='rice package')
 
 args = parser.parse_args()
 if args.rice:
