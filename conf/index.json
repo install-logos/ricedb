@@ -1,11 +1,9 @@
 [{  
 	"Name":"i3",
-    "Description":"A superior tiling WM",
-    "json-index":"index-i3.json"
+    "Description":"A superior tiling WM"
 },
 {  
 	"Name":"shittywm",
-    "Description":"An inferior tiling WM",
-    "json-index":"index-shittywm.json"
+    "Description":"An inferior tiling WM"
 }
 ]
