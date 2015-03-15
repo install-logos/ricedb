@@ -23,24 +23,21 @@ def lev_dist(first, second):
             distance_matrix[i][j] = min(insertion, deletion, substitution)
     return distance_matrix[first_length-1][second_length-1]
 
-def __search(json_file, target_val, field):
+def __search(data, target_val, field):
     """Performs a search of a json_file for a given value in a specified field, returning a boolean indicating succes or failure and a json which contains near/succesful matches """
-    json_data = open(json_file)
-    data = json.load(json_data)
-    json_data.close()
     found = False
     bounds = []
-    close_matches = {}
-
+    close_matches = [] 
+    #print(data)
     with open('../conf/search.config','r') as config:
         for line in config:
             if not line[0] == "#":   
                 bounds.append(line.split(' '))
     #Perform a fuzzy find for each software, if the score is high enough add that json index to a list
-    for obj in data:
-        sim = lev_dist(obj[field], target_val)
+    for program in data:
+        sim = lev_dist(program[field], target_val)
         if sim == 0:
-            return (True,obj)
+            return (True,program)
         size = len(target_val)
         for bound in bounds:
             lower = int(bound[0])
@@ -48,19 +45,35 @@ def __search(json_file, target_val, field):
             matches = int(bound[2])
             if size >= lower and size <= upper:
                 if sim <= matches:
-                    close_matches.update(obj)
+                    close_matches.append(program)
     return (False, close_matches)
 
 def search_software(software_name):
     """Searches index.json for a software of specified name. Returns a tuple containing a boolean value indicating whether or not a complete match was made and a json with exact or partial matches"""
-    success, hits = __search("../conf/index.json", software_name, "Name")
+    json_data = open("../conf/index.json")
+    data = json.load(json_data)
+    json_data.close()
+    programs = [] 
+    for program in data.values():
+        programs.append(program)
+        #print(program)
+    success, hits = __search(programs, software_name, "Name")
     return (success, hits)
 #Searches for a config name within a software. Returns either software_fail, rice_fail, or success depending on what it fines.
 def search_rice(software_name, rice_name):
     """Searches index.json for a software of specified name and a specific rice. Returns a string and a json file. The string will be contain the value 'software_fail', indicating a failure to match the software name, 'rice_fail', indicating a failure to match a specific rice_name, or 'success', indicating succesful matches of both the software and configuration names"""
-    success, hits = __search("../conf/index.json", software_name, "Name")
+    json_data = open("../conf/index.json")
+    data = json.load(json_data)
+    json_data.close()
+    packs = []
+    success, hits = search_software(software_name) 
     if success:
-        rice_success, rice_hits = __search("../conf/index-" + software_name + ".json", rice_name, "Name")
+        program = data[software_name]
+        #print(program['packages'])
+        for  pack in program['packages'].values():
+            packs.append(pack)
+        #print(packs)
+        rice_success, rice_hits = __search(packs,rice_name, "Name")
     else:
         return ("software_fail",hits)
     if rice_success:
