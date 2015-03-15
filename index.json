@@ -4,7 +4,7 @@
     "json-index":"index-i3.json"
 },
 {  
-	"Name":"B",
+	"Name":"shittywm",
     "Description":"An inferior tiling WM",
     "json-index":"index-shittywm.json"
 }
