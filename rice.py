@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from rice import search
 # from rice import render
-# from rice import download
+from rice import download
 # from rice import switch
 # from rice import setup
 
@@ -88,12 +88,12 @@ else:
 	print("Error, render failed to return a valid result")
 	exit()
 
-download_success = download.get_rice(rice_name,program_name,github_link)
+download_success, download_message = download.get_rice(rice_name,program_name,github_link)
 if not download_success:
-	print("Error, the rice you have tried to download has a naming conflict with a pre-existing rice")
+	print(download_message)
 	exit()
-
-prev_rice, switchout_success = switchout.switch(program_name)
+# Need to extract vanilla_files from the index.json to give to switchout and setup
+prev_rice, switchout_success = switchout.switch(program_name, vanilla_files)
 if not switchout_success:
 	print("Sorry, we could not succesfully swap out the rice that is currently installed")
 	exit()
