@@ -1,4 +1,10 @@
-import rice.search
+#!/usr/bin/python
+from rice import search
+# from rice import render
+# from rice import download
+# from rice import switch
+# from rice import setup
+
 import argparse
 
 # Main Script for running riceDB
@@ -56,13 +62,46 @@ parser.add_argument('program', help='program to rice')
 parser.add_argument('rice', nargs='?', help='rice package')
 parser.add_argument('-S', '--sync',
                     help='Install a package directly.')
-
+search_return = []
+selected_pack = None
+rice_name, program_name, github_link = ""
 args = parser.parse_args()
 if args.sync:
-    print(search.search_packages(args.program, args.sync, get_package))
+    search_return = search.search_packages(args.program, args.sync, search.get_package)
 
 elif args.rice:
-    print(search.search_packages(args.program, args.rice, search_keywords))
+    search_return = search.search_packages(args.program, args.rice, search.search_keywords)
 
 else:
-    print(search.get_software(args.program))
+    search_return = search.get_software(args.program))
+
+if not search_return is None:
+	selected_pack = render.select_options(search_return)
+else:
+	render.no_results()
+	exit()
+if not selected_pack is None:
+	rice_name = selected_pack['Name']
+	github_link = selected_pack['Github Repository']
+	program_name = args.program
+else:
+	print("Error, render failed to return a valid result")
+	exit()
+
+download_success = download.get_rice(rice_name,program_name,github_link)
+if not download_success:
+	print("Error, the rice you have tried to download has a naming conflict with a pre-existing rice")
+	exit()
+
+prev_rice, switchout_success = switchout.switch(program_name)
+if not switchout_success:
+	print("Sorry, we could not succesfully swap out the rice that is currently installed")
+	exit()
+
+setup_success = setup.install_rice(rice_name,program_name)
+if not setup_success:
+	print("Sorry, the rice you want to install could not be properly setup")
+	setup.install_rice(prev_rice, program_name)
+	exit()
+
+print("Your rice for " + program_name + " has been succesfully installed. Reload the program to check it out")
