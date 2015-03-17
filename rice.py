@@ -42,7 +42,7 @@ import argparse
 # folder.
 # Rice.py then will call the setup library which will take arguments
 # of a sysinfo.json, and a dictionary(of file names/locations) extracted from json.index.
-# These will contain entries in the format: 
+# These will contain entries in the format:
 # configname:location and Setup.py will move all config names specified in these two
 # inputs to their respective locations
 # Setup.py will finally modify the 'active' file in the .[programname]-rice
@@ -57,51 +57,87 @@ import argparse
 # Rice.py calls Setup.py to move files into correct locations
 # Rice.py exits
 
-parser = argparse.ArgumentParser(description='RiceDB cmdline cli')
-parser.add_argument('program', help='program to rice')
-parser.add_argument('rice', nargs='?', help='rice package')
-parser.add_argument('-S', '--sync',
-                    help='Install a package directly.')
+parser = argparse.ArgumentParser(
+    description="""
+    RiceDB is an universal configuration file manager designed to make
+    it easy to obtain configurations for any application that fit your
+    individual needs.
+    """
+)
+
+parser.add_argument(
+    'rice', nargs='*', type=str,
+    help="""
+    Optionnal positionnal argument, used to look for packages with specified
+    keywords for a specified program.
+
+    USAGE: rice <program_name> [keyword1, keyword2, ...]]
+    """
+)
+
+parser.add_argument(
+    '-S', '--sync', nargs=2, type=str,
+    help="""
+    Unlike the default positionnal argument this one won't search for a
+    a package using your keywords, you have to specify directly the name
+    of the package.
+
+    USAGE: rice -S <program_name> <package_name>
+    """
+)
+
 search_return = []
 selected_pack = None
 rice_name, program_name, github_link = ""
 args = parser.parse_args()
 if args.sync:
-    search_return = search.search_packages(args.program, args.sync, search.get_package)
+    # -S option used,
+    search_return = search.search_packages(args.sync[0],
+                                           args.sync[1],
+                                           search.get_package)
 
-elif args.rice:
-    search_return = search.search_packages(args.program, args.rice, search.search_keywords)
+elif len(args.rice) > 1:
+    # Program name + keyword specified
+    search_return = search.search_packages(args.rice[0],
+                                           args.rice[1:],
+                                           search.search_keywords)
 
 else:
-    search_return = search.get_software(args.program))
+    # Only the program name is mentionned
+    # Trying to get the package list of the specified program name
+    search_return = search.get_software(args.rice[0])
 
-if not search_return is None:
-	selected_pack = render.select_options(search_return)
+
+if search_return is not None:
+    selected_pack = render.select_options(search_return)
+
 else:
-	render.no_results()
-	exit()
+    render.no_results()
+    exit()
+
 if not selected_pack is None:
-	rice_name = selected_pack['Name']
-	github_link = selected_pack['Github Repository']
-	program_name = args.program
+    rice_name = selected_pack['Name']
+    github_link = selected_pack['Github Repository']
+    program_name = args.program
 else:
-	print("Error, render failed to return a valid result")
-	exit()
+    print("Error, render failed to return a valid result")
+    exit()
 
-download_success, download_message = download.get_rice(rice_name,program_name,github_link)
+download_success, download_message = download.get_rice(rice_name, program_name, github_link)
 if not download_success:
-	print(download_message)
-	exit()
+    print(download_message)
+    exit()
+
 # Need to extract vanilla_files from the index.json to give to switchout and setup
 prev_rice, switchout_success = switchout.switch(program_name, vanilla_files)
 if not switchout_success:
-	print("Sorry, we could not succesfully swap out the rice that is currently installed")
-	exit()
+    print("Sorry, we could not succesfully swap out the rice that is currently installed")
+    exit()
 
-setup_success = setup.install_rice(rice_name,program_name)
+setup_success = setup.install_rice(rice_name, program_name)
 if not setup_success:
-	print("Sorry, the rice you want to install could not be properly setup")
-	setup.install_rice(prev_rice, program_name)
-	exit()
+    print("Sorry, the rice you want to install could not be properly setup")
+    setup.install_rice(prev_rice, program_name)
+    exit()
 
 print("Your rice for " + program_name + " has been succesfully installed. Reload the program to check it out")
