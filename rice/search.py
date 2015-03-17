@@ -4,8 +4,11 @@ import json
 def get_software(software_name):
     """
     Searches index.json for a software of specified name.
-    Returns a tuple containing a boolean value indicating whether
-    or not a complete match was made and a json with exact or partial matches
+    It will return the the 'software_name' part of the json file or None
+    if the user input is correct or not.
+
+    ARGUMENTS:
+        'software_name': User input of a specific software.
     """
 
     json_data = open("conf/index.json")
@@ -19,7 +22,16 @@ def get_software(software_name):
 
 def search_keywords(packages, keywords):
     """
-    Return the bests packages according to the specified keyword
+    Return the mosts relevant packages according to the specified keyword.
+
+    ARGUMENTS:
+        'packages': Dictionnary of packages with package name for the dict key.
+                    'packages' should be a part of the index.json
+                    file wich contain package name by program name.
+
+        'keywords': List of keywords input by the user to search
+                    packages that will suit their needs
+                    example: ['blue', 'gapps']
     """
 
     packagesRelevance = {}
@@ -46,21 +58,43 @@ def search_keywords(packages, keywords):
     return res
 
 
-def get_package(queryResult, rice_name):
-    return queryResult.get(rice_name, None)
-
-
-def search_packages(software_name, rice_name, modeFunction):
+def get_package(packages, rice_name):
     """
-    Searches index.json for a software of specified name and return, packages
-    according to the mode we specified in 'modeFunction'.
+    Get the 'rice_name' package in 'packages' dict else it return None.
+
+    ARGUMENTS:
+        'packages': Dictionnary of packages of a software (package name are
+                    the dict key).
+                    'packages' should be a part of the index.json
+                    file wich contain package name by program name.
+
+        'rice_name': String of the specific package name input by the user.
     """
 
-    rice_hits = None
-    queryResult = get_software(software_name)
+    return packages.get(rice_name, None)
+
+
+def search_packages(softwareName, riceName, mode_function):
+    """
+    Searches index.json for package(s) of 'software_name'.
+    It will return relevant packages according to the mode specified
+    in 'modeFunction'.
+    If the user enter something wrong it return None.
+
+    ARGUMENTS:
+        'software_name': String of the specific software to look after
+                         the packages
+        'rice_name': Keywords lists or specific package according to the mode
+        'modeFunction': Function passed as an argument to pass the mode of
+                        package search (could be direct search or a search by
+                        keyword).
+    """
+
+    riceHits = None
+    queryResult = get_software(softwareName)
 
     if queryResult is not None:
-        # Launch fuzzy find
-        rice_hits = modeFunction(queryResult['packages'], rice_name)
+        # Launch find function according to 'mode_function'
+        riceHits = mode_function(queryResult['packages'], riceName)
 
-    return rice_hits
+    return riceHits
