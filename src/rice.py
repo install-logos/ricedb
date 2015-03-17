@@ -1,11 +1,7 @@
 #!/bin/env python
-from rice import search
-from rice import render
-from rice import download
-from rice import swapout
-from rice import swapin
-
+from rice import search, render, download, swapout, swapin
 import argparse
+import json
 
 # Main Script for running riceDB
 # To install a new rice, rice.py will:
@@ -87,6 +83,9 @@ parser.add_argument(
 )
 
 search_return = []
+json_data = open('conf/index.json')
+data = json.load(json_data)
+json_data.close()
 selected_pack = None
 args = parser.parse_args()
 if args.sync:
@@ -117,12 +116,15 @@ else:
     exit()
 
 if not selected_packs is None and render_success:
+    print(selected_packs)
     for pack in selected_packs:
-        print(pack)
         rice_name = pack['Name']
         github_link = pack['Github Repository']
-        program_name = args.rice[0]
-
+        if args.sync:
+            program_name = args.sync[0]
+        else:
+            program_name = args.rice[0]
+        vanilla_files = data.get(program_name, None)['Files']
     download_success, download_message = download.download(github_link, program_name, rice_name)
     if not download_success:
         print(download_message)

@@ -2,6 +2,11 @@
    "i3":{
       "Name":"i3",
       "Description":"A superior tiling WM",
+      "Files":{
+		"file1.conf":"~/.example-repo/",
+		"file2.conf":"~/.example-repo/",
+		"file3.conf":"~/.example-repo/"
+	  },
       "packages":{
          "example-repo": {
             "Name":"example-repo",

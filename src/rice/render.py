@@ -35,8 +35,22 @@ def render_dict(rice_list):
         i += 1
 
 def select_options(rice_list):
+    rices = []
+    # Need to handle 3 cases: One for software search, which returns a primary dict entry,
+    # Another for a list which is returned for a rice query
+    # and a last one for the -S option which is a single rice dict entry
+    if type(rice_list) is dict:
+        if 'packages' in rice_list:
+            packs = rice_list['packages']
+            for key, rice in packs.items():
+                rices.append(rice)
+        else:
+            rices.append(rice_list)
+            return(rices, True, "")
+    else:
+        rices = rice_list
     #renders a formated rice list then prompts user for rices to choose, checks user input and finally creates a list containing the rice names
-    render_dict(rice_list)
+    render_dict(rices)
     print('Please type in the number corresponding to the rice you want to choose (range with a-b, multiple choices with a,b,c):')
     user_choice = input()
     user_input = transform(user_choice)
@@ -45,9 +59,9 @@ def select_options(rice_list):
         user_choice = input()
         user_input = transform(user_choice)
         if(user_choice == 'q'):
-            return(None,False, "Quitting riceDB")
+            return(None, None, False, "Quitting riceDB")
     chosen_rices = []
     for i in user_input:
-        chosen_rices.append(rice_list[i])
+        chosen_rices.append(rices[i])
     return(chosen_rices, True, "")
 
