@@ -3,7 +3,7 @@ from rice import search
 # from rice import render
 from rice import download
 from rice import swapout
-from rice import setup
+from rice import swapin
 
 import argparse
 
@@ -109,35 +109,35 @@ else:
 
 
 if search_return is not None:
-    selected_pack = render.select_options(search_return)
+    selected_packs, render_success, render_message = render.select_options(search_return)
 
 else:
     render.no_results()
     exit()
 
-if not selected_pack is None:
-    rice_name = selected_pack['Name']
-    github_link = selected_pack['Github Repository']
-    program_name = args.program
+if not selected_packs is None and render_success:
+    for pack in selected_packs:
+        rice_name = pack['Name']
+        github_link = pack['Github Repository']
+        program_name = args.program
+
+    download_success, download_message = download.get_rice(rice_name, program_name, github_link)
+    if not download_success:
+        print(download_message)
+        exit()
+
+    # Need to extract vanilla_files from the index.json to give to switchout and setup
+    prev_rice, switchout_success, switchout_message = switchout.switch(program_name, vanilla_files)
+    if not switchout_success:
+        print(switchout_message)
+        exit()
+
+    swapin_success, swapin_message = swapin.install_rice(rice_name, program_name)
+    if not swapin_success:
+        print(swapin_message)
+        swapin.install_rice(prev_rice, program_name)
+        exit()
 else:
-    print("Error, render failed to return a valid result")
+    print(render_message)
     exit()
-
-download_success, download_message = download.get_rice(rice_name, program_name, github_link)
-if not download_success:
-    print(download_message)
-    exit()
-
-# Need to extract vanilla_files from the index.json to give to switchout and setup
-prev_rice, switchout_success = switchout.switch(program_name, vanilla_files)
-if not switchout_success:
-    print("Sorry, we could not succesfully swap out the rice that is currently installed")
-    exit()
-
-setup_success = setup.install_rice(rice_name, program_name)
-if not setup_success:
-    print("Sorry, the rice you want to install could not be properly setup")
-    setup.install_rice(prev_rice, program_name)
-    exit()
-
 print("Your rice for " + program_name + " has been succesfully installed. Reload the program to check it out")
