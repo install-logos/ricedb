@@ -46,6 +46,3 @@ def swfiles(dictionary, folder):
     key = list(dictionary.keys())
     for k in key:
         os.rename(dictionary[k] + k, './' + k)
-
-
-            

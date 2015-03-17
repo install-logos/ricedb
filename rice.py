@@ -2,8 +2,8 @@
 from rice import search
 # from rice import render
 from rice import download
-# from rice import switch
-# from rice import setup
+from rice import swapout
+from rice import setup
 
 import argparse
 
