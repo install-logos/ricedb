@@ -1,6 +1,20 @@
 import os
 import json
 #TODO add hashing
+def serialize(dictionary, json_file):
+    #encodes a dict into a json file
+    json_data = open(json_file)
+    json.load(json_data)
+    json_data.write(json.JSONEncoder().encode(dictionary))
+    json_data.close()
+
+def swfiles(dictionary, folder):
+    #moves files specified in dictionary into folder and changes working dir to that folder
+    os.chdir(folder)
+    key = list(dictionary.keys())
+    for k in key:
+        os.rename(dictionary[k] + k, './' + k)
+
 def switch(prog_name, dict_file):
     os.chdir('~/.riceDB/' + prog_name)
     if(os.path.exists('./.active') and os.path.isfile('./.active')):
@@ -39,17 +53,3 @@ def switch(prog_name, dict_file):
         swfiles(dict_file,'./')
         serialize(user_file,'sysinfo.json')
         return (rice_name,True,"")
-def serialize(dictionary, json_file):
-    #encodes a dict into a json file
-
-    json_data = open(json_file)
-    json.load(json_data)
-    json_data.write(json.JSONEncoder().encode(dictionary))
-    json_data.close()
-def swfiles(dictionary, folder):
-    #moves files specified in dictionary into folder and changes working dir to that folder
-
-    os.chdir(folder)
-    key = list(dictionary.keys())
-    for k in key:
-        os.rename(dictionary[k] + k, './' + k)
