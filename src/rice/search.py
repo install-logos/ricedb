@@ -10,14 +10,16 @@ def get_software(software_name):
     ARGUMENTS:
         'software_name': User input of a specific software.
     """
-
+    rice_list = []
     json_data = open("conf/index.json")
     data = json.load(json_data)
     json_data.close()
 
     target = data.get(software_name, None)
-
-    return target
+    rices = target['packages']
+    for rice in rices.items():
+        rice_list.append(rice[1])
+    return rice_list
 
 
 def search_keywords(packages, keywords):

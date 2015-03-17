@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/bin/env python
 from rice import search
-# from rice import render
+from rice import render
 from rice import download
 from rice import swapout
 from rice import swapin
@@ -88,7 +88,6 @@ parser.add_argument(
 
 search_return = []
 selected_pack = None
-rice_name, program_name, github_link = ""
 args = parser.parse_args()
 if args.sync:
     # -S option used,
@@ -102,32 +101,35 @@ elif len(args.rice) > 1:
                                            args.rice[1:],
                                            search.search_keywords)
 
-else:
+elif len(args.rice) == 1:
     # Only the program name is mentionned
     # Trying to get the package list of the specified program name
     search_return = search.get_software(args.rice[0])
-
-
+else:
+    print("You must run rice.py with inputs. Try rice.py -h if you're unsure how to use the program")
+    exit()
+print(search_return)
 if search_return is not None:
     selected_packs, render_success, render_message = render.select_options(search_return)
 
 else:
-    render.no_results()
+    print("Sorry, we could not find the rice or program of the specified name.")
     exit()
 
 if not selected_packs is None and render_success:
     for pack in selected_packs:
+        print(pack)
         rice_name = pack['Name']
         github_link = pack['Github Repository']
-        program_name = args.program
+        program_name = args.rice[0]
 
-    download_success, download_message = download.get_rice(rice_name, program_name, github_link)
+    download_success, download_message = download.download(github_link, program_name, rice_name)
     if not download_success:
         print(download_message)
         exit()
 
     # Need to extract vanilla_files from the index.json to give to switchout and setup
-    prev_rice, switchout_success, switchout_message = switchout.switch(program_name, vanilla_files)
+    prev_rice, switchout_success, switchout_message = swapout.switch(program_name, vanilla_files)
     if not switchout_success:
         print(switchout_message)
         exit()

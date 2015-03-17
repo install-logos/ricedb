@@ -1,6 +1,6 @@
 import os
 import json
-import download
+from rice import download
 import hashlib
 
 def getHash(file_name, blocksize=2**20):
