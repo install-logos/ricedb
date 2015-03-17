@@ -14,18 +14,24 @@ setup(
         your individual needs.
         """
     ),
-    author='logos',
-    author_email='',
-    url='https://github.com/install-logos/riceDB',
-    license='GPL V3',
-    install_requires=[
-        'json',
-        'argparse',
-        'os',
-        'urllib',
-        'zipfile',
-        'hashlib',
-        'download'
+    classifiers=[
+        'Package manager',
+        'Environment :: Console',
+        'Intended Audience :: ricer',
+        'Intended Audience :: neckbeard',
+        'Operating System :: logos'
+        'Operating System :: GNU/Linux'
+        'Topic :: Package manager',
+        'Topic :: config manager',
+        'Topic :: rice',
     ],
-    packages=['src'],
+    author='lo/g/os',
+    author_email='',
+    url='http://logos-linux.org/',
+    download_url='https://github.com/install-logos/riceDB',
+    platforms='GNU/Linux',
+    license='GPL V3',
+
+    install_requires=[],
+    packages=['src']
 )
