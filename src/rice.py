@@ -1,5 +1,5 @@
 #!/bin/env python
-from rice import search, render, download, swapout, swapin
+from rice import search, new_rice
 import argparse
 import json
 
@@ -82,66 +82,24 @@ parser.add_argument(
     """
 )
 
-search_return = []
-json_data = open('conf/index.json')
-data = json.load(json_data)
-json_data.close()
-selected_pack = None
 args = parser.parse_args()
 if args.sync:
     # -S option used,
     search_return = search.search_packages(args.sync[0],
                                            args.sync[1],
                                            search.get_package)
-
+    new_rice.install(search_return)
 elif len(args.rice) > 1:
     # Program name + keyword specified
     search_return = search.search_packages(args.rice[0],
                                            args.rice[1:],
                                            search.search_keywords)
-
+     new_rice.install(search_return)
 elif len(args.rice) == 1:
     # Only the program name is mentionned
     # Trying to get the package list of the specified program name
     search_return = search.get_software(args.rice[0])
+    new_rice.install(search_return)
 else:
     print("You must run rice.py with inputs. Try rice.py -h if you're unsure how to use the program")
     exit()
-print(search_return)
-if search_return is not None:
-    selected_packs, render_success, render_message = render.select_options(search_return)
-
-else:
-    print("Sorry, we could not find the rice or program of the specified name.")
-    exit()
-
-if not selected_packs is None and render_success:
-    print(selected_packs)
-    for pack in selected_packs:
-        rice_name = pack['Name']
-        github_link = pack['Github Repository']
-        if args.sync:
-            program_name = args.sync[0]
-        else:
-            program_name = args.rice[0]
-        vanilla_files = data.get(program_name, None)['Files']
-    download_success, download_message = download.download(github_link, program_name, rice_name)
-    if not download_success:
-        print(download_message)
-        exit()
-
-    # Need to extract vanilla_files from the index.json to give to switchout and setup
-    prev_rice, switchout_success, switchout_message = swapout.switch(program_name, vanilla_files)
-    if not switchout_success:
-        print(switchout_message)
-        exit()
-
-    swapin_success, swapin_message = swapin.install_rice(rice_name, program_name, vanilla_files)
-    if not swapin_success:
-        print(swapin_message)
-        swapin.install_rice(prev_rice, program_name)
-        exit()
-else:
-    print(render_message)
-    exit()
-print("Your rice for " + program_name + " has been succesfully installed. Reload the program to check it out")
