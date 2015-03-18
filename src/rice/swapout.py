@@ -1,3 +1,4 @@
+from rice import download
 import os
 import json
 #TODO add hashing
@@ -17,17 +18,19 @@ def swfiles(dictionary, folder):
         os.rename(os.environ['HOME'] + loc + k, './' + k)
 
 def switch(prog_name, dict_file):
-    os.chdir(os.environ['HOME'] + '/.riceDB/' + prog_name + '/')
+    download.checkpath(os.environ['HOME'] + '/.riceDB/' + prog_name + '/')
     if(os.path.exists('./.active') and os.path.isfile('./.active')):
         #if rice is a riceDB rice, read sysinfo.json to move non-vanilla files
         active_rice = open('./.active').readline().rstrip()
+        if not os.path.exists('./' + active_rice):
+            return (None, False, "Error, the .active file in the program rice folder is currently pointing to a non-valid rice, please change it to point to the rice that is currently being used")
         os.chdir('./' + active_rice)
         json_data = open('sysinfo.json')
         data = json.load(json_data)
         json_data.close()
         swfiles(data, './')
         swfiles(dict_file, './')
-        return (active_rice,True,"")
+        return (active_rice, True, "")
     else:
         #else ask user for non-vanilla files
         user_files = {}
