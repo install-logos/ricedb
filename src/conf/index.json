@@ -1,0 +1,61 @@
+{
+   "i3":{
+      "Name":"i3",
+      "Description":"A superior tiling WM",
+      "Files":{
+		"file1.conf":"~/.example-repo/",
+		"file2.conf":"~/.example-repo/",
+		"file3.conf":"~/.example-repo/"
+	  },
+      "packages":{
+         "example-repo": {
+            "Name":"example-repo",
+            "Description":"A is for A superior experience",
+            "Images":[
+               "1.jpg",
+               "2.jpg",
+               "3.jpg"
+            ],
+			"Version":"v0.1.0",
+            "Github Repository":"https://github.com/install-logos/example-repo/archive/master.zip"
+         },
+         "B": {
+            "Name":"B",
+            "Description":"Use B is you don't wanna B a scrub",
+            "Images":[
+               "1.jpg",
+               "2.jpg",
+               "3.jpg"
+            ],
+			"Version":"v0.2.5",
+            "Github Repository":"..."
+         }
+      }
+   },
+   "shittywm":{
+      "Name":"shittywm",
+      "Description":"An inferior tiling WM",
+      "packages":{
+         "A": {
+            "Name":"A",
+            "Description":"...",
+            "Images":[
+               "1.jpg",
+               "2.jpg",
+               "3.jpg"
+            ],
+            "Github Repository":"..."
+         },
+         "B": {
+            "Name":"B",
+            "Description":"...",
+            "Images":[
+               "1.jpg",
+               "2.jpg",
+               "3.jpg"
+            ],
+            "Github Repository":"..."
+         }
+      }
+   }
+}
