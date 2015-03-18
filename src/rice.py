@@ -96,7 +96,7 @@ if args.sync:
     search_return = search.search_packages(args.sync[0],
                                            args.sync[1],
                                            search.get_package)
-    new_rice.install(search_return)
+    new_rice.install(search_return, args.sync[0])
 elif args.swap:
     # -s option used,
     swap.swap(args.swap[0], args.swap[1])
@@ -105,12 +105,12 @@ elif len(args.rice) > 1:
     search_return = search.search_packages(args.rice[0],
                                            args.rice[1:],
                                            search.search_keywords)
-    new_rice.install(search_return)
+    new_rice.install(search_return, args.rice[0])
 elif len(args.rice) == 1:
     # Only the program name is mentionned
     # Trying to get the package list of the specified program name
     search_return = search.get_software(args.rice[0])
-    new_rice.install(search_return)
+    new_rice.install(search_return, args.rice[0])
 else:
     print("You must run rice.py with inputs. Try rice.py -h if you're unsure how to use the program")
     exit()

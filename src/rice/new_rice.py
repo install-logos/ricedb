@@ -2,7 +2,7 @@ from rice import render, download, swapout, swapin
 import json
 
 
-def install(search_return):
+def install(search_return, program_name):
     json_data = open('conf/index.json')
     data = json.load(json_data)
     json_data.close()
@@ -17,10 +17,6 @@ def install(search_return):
         for pack in selected_packs:
             rice_name = pack['Name']
             github_link = pack['Github Repository']
-            if args.sync:
-                program_name = args.sync[0]
-            else:
-                program_name = args.rice[0]
             vanilla_files = data.get(program_name, None)['Files']
         download_success, download_message = download.download(github_link, program_name, rice_name)
         if not download_success:
