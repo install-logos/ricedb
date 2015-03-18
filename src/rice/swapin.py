@@ -19,6 +19,8 @@ def install_rice(rice_name, program_name, file_dict):
     and will move files into locations specified by sysinfo.json and the file_dict
     argument
     """
+    if not os.path.exists(os.environ['HOME'] + '/.riceDB/' + program_name + '/' + rice_name + '/'):
+        return (False, "One or more paths specified do not exist. Please ensure that both the program and rice to be installed exist")
     os.chdir(os.environ['HOME'] + '/.riceDB/' + program_name + '/' + rice_name + '/')
     json_data = open("sysinfo.json")
     data = json.load(json_data)

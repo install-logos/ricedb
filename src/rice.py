@@ -1,5 +1,5 @@
 #!/bin/env python
-from rice import search, new_rice
+from rice import search, new_rice, swap
 import argparse
 import json
 
@@ -62,6 +62,14 @@ parser = argparse.ArgumentParser(
 )
 
 parser.add_argument(
+    '-s', '--swap', nargs=2, type=str,
+        help="""
+        This swaps out the current rice for [program] with the specified rice.
+        USAGE: rice.py --swap or -s [program] [rice]
+        """
+)
+
+parser.add_argument(
     'rice', nargs='*', type=str,
     help="""
     Optionnal positionnal argument, used to look for packages with specified
@@ -89,6 +97,9 @@ if args.sync:
                                            args.sync[1],
                                            search.get_package)
     new_rice.install(search_return)
+elif args.swap:
+    # -s option used,
+    swap.swap(args.swap[0], args.swap[1])
 elif len(args.rice) > 1:
     # Program name + keyword specified
     search_return = search.search_packages(args.rice[0],
