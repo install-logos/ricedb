@@ -94,7 +94,7 @@ elif len(args.rice) > 1:
     search_return = search.search_packages(args.rice[0],
                                            args.rice[1:],
                                            search.search_keywords)
-     new_rice.install(search_return)
+    new_rice.install(search_return)
 elif len(args.rice) == 1:
     # Only the program name is mentionned
     # Trying to get the package list of the specified program name
