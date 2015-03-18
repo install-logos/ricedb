@@ -136,7 +136,7 @@ if not selected_packs is None and render_success:
         print(switchout_message)
         exit()
 
-    swapin_success, swapin_message = swapin.install_rice(rice_name, program_name)
+    swapin_success, swapin_message = swapin.install_rice(rice_name, program_name, vanilla_files)
     if not swapin_success:
         print(swapin_message)
         swapin.install_rice(prev_rice, program_name)

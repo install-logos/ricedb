@@ -5,18 +5,24 @@ import zipfile
 riceDB_path = os.environ['HOME'] + "/.riceDB"
 # print(riceDB_path)
 
+def check(path):
+    path = path.replace("~/",os.environ["HOME"] + "/")
+
+    if not (os.path.exists(path) and os.path.isdir(path)):
+        os.mkdir(path)
+    return path
 
 def checkpath(path):
+    path = path.replace("~/",os.environ["HOME"] + "/")
     if (os.path.exists(path) and os.path.isdir(path)):
         os.chdir(path)
     else:
         os.mkdir(path)
         os.chdir(path)
 
-
 def download(gitlink, progname, ricename):
     checkpath(riceDB_path)
-    checkpath("./" + progname + "-rice")
+    checkpath("./" + progname + '/')
     if (os.path.exists("./" + ricename) and os.path.isdir(ricename)):
         return (False,"This rice already exists")
     else:
