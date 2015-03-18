@@ -28,10 +28,8 @@ def render_dict(rice_list):
         name = rice['Name']
         desc = rice['Description']
         version = rice['Version']
-        print('(' + str(i) + ') ' + name + ':')
-        print('\t' + 'Version : ' + version)
-        print('\t' + 'Description :')
-        print('\t\t' + desc)
+        display_string = '({}) {}: \n\tVersion : {}\n\tDescription : \n\t\t {}'.format(i, name, version, desc)
+        print(display_string)
         i += 1
 
 def select_options(rice_list):
@@ -52,14 +50,13 @@ def select_options(rice_list):
     #renders a formated rice list then prompts user for rices to choose, checks user input and finally creates a list containing the rice names
     render_dict(rices)
     print('Please type in the number corresponding to the rice you want to choose (range with a-b, multiple choices with a,b,c):')
+    print("Please choose from the results (q to quit)")
     user_choice = input()
+    if(user_choice == 'q' or user_choice.isalpha()):
+            return(None,False, "Quitting riceDB")
     user_input = transform(user_choice)
-    while(not check(user_input, rice_list)):
-        print("Please choose from the results (q to quit)")
-        user_choice = input()
-        user_input = transform(user_choice)
-        if(user_choice == 'q'):
-            return(None, None, False, "Quitting riceDB")
+
+    
     chosen_rices = []
     for i in user_input:
         chosen_rices.append(rices[i])
