@@ -33,7 +33,7 @@ class Renderer(object):
 
     # Create result box delimiter
     for i in range(curses.COLS - 1):
-      self.scr.addch(1, i, curses.ACS_HLINE)
+      self.scr.insch(1, i, curses.ACS_HLINE)
     self.scr.refresh()
 
     # Set selection index to search
@@ -67,6 +67,7 @@ class Renderer(object):
     # Font dimensions
     fw, fh = util.getFontDimensions()
     # Image dimensions
+      raise error.CorruptionError("Package has no install file.")
     iw, ih = util.getImageDimensions(tempFile)
     # Box dimensions
     bw, bh = w * fw, h *fh
@@ -95,7 +96,7 @@ class Renderer(object):
     self.results = curses.newpad(max(len(results), curses.LINES - 1), curses.COLS//2)
     self.results.clear()
     for i in range(curses.LINES - SEARCHBAR_OFFSET):
-      self.results.addch(i, curses.COLS//2 - 2, curses.ACS_VLINE)
+      self.results.insch(i, curses.COLS//2 - 2, curses.ACS_VLINE)
     i = 0
     for result in results:
       self.results.addstr(i, 0, result.name)
