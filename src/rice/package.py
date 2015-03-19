@@ -94,10 +94,10 @@ class Package(object):
                   file_locs = self.install_data['Files']
               else:
                   raise error.corruption_error("Could not read the files in the JSON")
-          switch_out()
-          switch_in()
+          self.switch_out()
+          self.switch_in()
 
-      def switch_out():
+      def switch_out(self):
           os.chdir(self.prog_path)
           if(os.path.exists('./.active') and os.path.isfile('./.active')):
               #if rice is a rice_dB rice, read sysinfo.json to move non-vanilla files
@@ -112,7 +112,7 @@ class Package(object):
           # else:
           # TODO - Get switchout working for a local rice
 
-      def switch_in():
+      def switch_in(self):
           os.chdir(self.path)
           if not (os.path.exists(self.conf_root)):
               os.mkdir(self.conf_root)
