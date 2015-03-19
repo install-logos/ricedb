@@ -49,22 +49,54 @@ class Renderer(object):
       except Exception as e:
         print(str(e))
 
+
+  # This will draw into a box defined by the passed in parameters
+  def drawImage(self, tempFile, x, y, w, h):
+    # Font dimensions
+    fw, fh = util.getFontDimensions()
+    # Image dimensions
+    iw, ih = util.getImageDimensions(tempFile)
+    # Box dimensions
+    bw, bh = w * fw, h *fh
+    
+    # Scale the image to the box
+    if iw > ih:
+      scale = 1.0 * bw / iw
+    else:
+      scale = 1.0 * bh / ih
+    iw = scale * iw
+    ih = scale * ih
+
+    # Get margin
+    xM = (bw - iw) / 2
+    yM = (bh - ih) / 2
+
+    # Get x, y coordinates
+    x = x * fw + xM
+    y = y * fh + yM
+
+    self.w3m.draw(tempFile, 1, x, y, w=iw, h=ih)
+
   def populate(self, results):
-    self.end()
     if not self.results == None:
       del self.results
-    self.results = curses.newpad(max(len(results), curses.LINES - 1), curses.COLS - 1)
-    self.results.erase()
+    self.results = curses.newpad(max(len(results), curses.LINES - 1), curses.COLS//2)
+    self.results.clear()
+    for i in range(curses.LINES - SEARCHBAR_OFFSET):
+      self.results.addch(i, curses.COLS//2 - 2, curses.ACS_VLINE)
     i = 0
     for result in results:
       self.results.addstr(i, 0, result.name)
-      if not result.images == None:
-        tempFile = util.RDBDIR + 'tmp'
+      if (not result.images == None) and (self.w3mEnabled):
         try:
+          tempFile = util.RDBDIR + 'tmp'
           urllib.request.urlretrieve(result.images[0], tempFile)
+          self.drawImage(tempFile, curses.COLS - curses.COLS/2, SEARCHBAR_OFFSET, curses.COLS/2, curses.LINES - SEARCHBAR_OFFSET)
         except Exception as e:
+          # Who cares? it's just a picture.
+          self.end()
           print(str(e))
-        self.w3m.draw(tempFile, 1, 100, 20, w=100, h=100)
+          pass
       i += 1
 
     self.results.noutrefresh(0, 0, SEARCHBAR_OFFSET, 0, curses.LINES-1, curses.COLS-1)

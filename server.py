@@ -15,6 +15,7 @@ class MyServer(BaseHTTPRequestHandler):
     out += ["""[
 {
   "Name": "test repo",
+  "Description": "This is a sample of the description feild.",
   "URL": "http://localhost:8000/test.zip",
   "Images": ["http://localhost:8000/test.jpg"]
 }
