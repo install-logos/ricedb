@@ -22,7 +22,6 @@ class Renderer(object):
     self.text.stripspaces = True
 
     # Create result box delimiter
-    self.results = curses.newwin(curses.LINES - 2, curses.COLS - 1, 1, 1)
     for i in range(curses.COLS - 1):
       self.scr.addch(1, i, curses.ACS_HLINE)
 
@@ -32,18 +31,23 @@ class Renderer(object):
     while 1:
       self.textarea.clear()
       queryString = self.text.edit().strip()
-      if queryString == "exit" or queryString == "":
+      if queryString == "exit":
         self.end()
         break
       results = query.Query(queryString).getResults()
       self.populate(results)
 
   def populate(self, results):
-    i = 1
+    self.end()
+    self.results = curses.newwin(curses.LINES - 2, curses.COLS - 1, 1, 1)
+    self.scr.addstr(0, 0, "Search:")
+    for i in range(curses.COLS - 1):
+      self.scr.addch(1, i, curses.ACS_HLINE)
+    i = 2
     for result in results:
       self.scr.addstr(i, 0, result.name)
-      ## Render to screen with pads and stuff.
-      pass
+    self.scr.refresh()
+    self.textarea.refresh()
 
   def end(self):
     self.scr.clear()

@@ -2,5 +2,9 @@
 from rice import render
 
 a = render.Renderer()
-a.loop()
+try:
+  a.loop()
+except Exception as e:
+  a.end()
+  print(str(e))
 
