@@ -36,19 +36,31 @@ class Renderer(object):
       self.scr.addch(1, i, curses.ACS_HLINE)
     self.scr.refresh()
 
+    # Set selection index to search
+    self.index = -1
+
+  def handleScroll(self):
+    k = self.scr.getkey()
+    self.end()
+    print(k)
+    exit()
+
   def loop(self):
-    while 1:
+    if self.index == -1:
       try:
         self.textarea.erase()
         queryString = self.text.edit().strip()
         if queryString == "exit":
           self.end()
-          break
+          return 1
         results = query.Query(queryString).getResults()
         self.populate(results)
+        #self.index = 0 # Set selection to first result
       except Exception as e:
         print(str(e))
-
+    else:
+      self.handleScroll()
+    return 0
 
   # This will draw into a box defined by the passed in parameters
   def drawImage(self, tempFile, x, y, w, h):
