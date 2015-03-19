@@ -13,9 +13,13 @@ TMPEXTENSION = "-tmp.zip"
 INSTALL = "install.json"
 
 class Package(object):
-  def __init__(self, data):
+  def __init__(self, data, old=""):
     self.data = data
     self.downloaded = False
+    if not old == "":
+      self.downloaded = True
+      self.name = old
+      self.path = util.RDBDIR + self.name
     self.images = None
     if ("Name" in self.data):
       self.name = self.data["Name"]
@@ -32,13 +36,13 @@ class Package(object):
 
   def download(self):
     # Get the path of the download
-    path = util.RDBDIR + self.name
+    self.path = util.RDBDIR + self.name
     if not (os.path.exists(util.RDBDIR) and os.path.isdir(util.RDBDIR)):
       os.mkdir(util.RDBDIR)
-    if (os.path.exists(path) and os.path.isdir(path)):
-      raise error.Error("This rice ("+path+") already exists.")
+    if (os.path.exists(self.path) and os.path.isdir(self.path)):
+      raise error.Error("This rice ("+self.path+") already exists.")
     # Download the file
-    tempFile = path + TMPEXTENSION
+    tempFile = self.path + TMPEXTENSION
     urllib.request.urlretrieve(self.url, tempFile)
     # Check if the file downloaded successfully
     if not (os.path.exists(tempFile) and zipfile.is_zipfile(tempFile)):
@@ -46,14 +50,14 @@ class Package(object):
     # Unzip the file
     z = zipfile.ZipFile(tempFile)
     for name in z.namelist():
-      z.extract(name, path)
+      z.extract(name, self.path)
     os.remove(tempFile)
     self.downloaded = True
 
   def install(self):
     if not self.downloaded:
       raise error.Error("Package not downloaded.")
-    installFile = path + INSTALL
+    installFile = self.path + INSTALL
     if not (os.path.exists(installFile) and os.path.isfile(installFile)):
       raise error.CorruptionError("Package has no install file.")
     with open(installFile) as f:
