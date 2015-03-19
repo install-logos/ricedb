@@ -36,7 +36,7 @@ class Package(object):
     if not (os.path.exists(util.RDBDIR) and os.path.isdir(util.RDBDIR)):
       os.mkdir(util.RDBDIR)
     if (os.path.exists(path) and os.path.isdir(path)):
-      raise error.Error("This rice ("+path+") already exists.")
+      raise error.Error("Path ("+path+") already exists.")
     # Download the file
     tempFile = path + TMPEXTENSION
     urllib.request.urlretrieve(self.url, tempFile)
@@ -52,7 +52,7 @@ class Package(object):
 
   def install(self):
     if not self.downloaded:
-      raise error.Error("Package not downloaded.")
+      raise error.Error("Package is not downloaded.")
     installFile = path + INSTALL
     if not (os.path.exists(installFile) and os.path.isfile(installFile)):
       raise error.CorruptionError("Package has no install file.")
@@ -62,5 +62,3 @@ class Package(object):
       except Exception as e:
         raise error.CorruptionError("Could not read JSON: %s" %(e))
     ## Now execute the installation
-    
-
