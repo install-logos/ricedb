@@ -33,28 +33,41 @@ class Renderer(object):
 
     # Create result box delimiter
     for i in range(curses.COLS - 1):
-      self.scr.addch(1, i, curses.ACS_HLINE)
+      self.scr.insch(1, i, curses.ACS_HLINE)
     self.scr.refresh()
 
+    # Set selection index to search
+    self.index = -1
+
+  def handleScroll(self):
+    k = self.scr.getkey()
+    self.end()
+    print(k)
+    exit()
+
   def loop(self):
-    while 1:
+    if self.index == -1:
       try:
         self.textarea.erase()
         queryString = self.text.edit().strip()
         if queryString == "exit":
           self.end()
-          break
+          return 1
         results = query.Query(queryString).getResults()
         self.populate(results)
+        #self.index = 0 # Set selection to first result
       except Exception as e:
         print(str(e))
-
+    else:
+      self.handleScroll()
+    return 0
 
   # This will draw into a box defined by the passed in parameters
   def drawImage(self, tempFile, x, y, w, h):
     # Font dimensions
     fw, fh = util.getFontDimensions()
     # Image dimensions
+      raise error.CorruptionError("Package has no install file.")
     iw, ih = util.getImageDimensions(tempFile)
     # Box dimensions
     bw, bh = w * fw, h *fh
@@ -83,7 +96,7 @@ class Renderer(object):
     self.results = curses.newpad(max(len(results), curses.LINES - 1), curses.COLS//2)
     self.results.clear()
     for i in range(curses.LINES - SEARCHBAR_OFFSET):
-      self.results.addch(i, curses.COLS//2 - 2, curses.ACS_VLINE)
+      self.results.insch(i, curses.COLS//2 - 2, curses.ACS_VLINE)
     i = 0
     for result in results:
       self.results.addstr(i, 0, result.name)
