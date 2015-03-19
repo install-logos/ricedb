@@ -55,7 +55,6 @@ class Renderer(object):
     # Font dimensions
     fw, fh = util.getFontDimensions()
     # Image dimensions
-      raise error.CorruptionError("Package has no install file.")
     iw, ih = util.getImageDimensions(tempFile)
     # Box dimensions
     bw, bh = w * fw, h *fh
