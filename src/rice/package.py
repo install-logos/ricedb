@@ -16,6 +16,7 @@ class Package(object):
   def __init__(self, data):
     self.data = data
     self.downloaded = False
+    self.images = None
     if ("Name" in self.data):
       self.name = self.data["Name"]
     else:
@@ -25,6 +26,9 @@ class Package(object):
       self.url = self.data["URL"]
     else:
       raise error.CorruptionError("Could not determine URL of package.")
+
+    if ("Images" in self.data):
+      self.images = self.data["Images"]
 
   def download(self):
     # Get the path of the download

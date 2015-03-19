@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
+import random
 
 hostName = "localhost"
 hostPort = 9000
@@ -10,12 +11,29 @@ class MyServer(BaseHTTPRequestHandler):
     self.send_header("Content-type", "application/json")
     self.end_headers()
     #self.path
-    self.wfile.write(bytes("""[
+    out = []
+    out += ["""[
 {
   "Name": "test repo",
+  "URL": "http://localhost:8000/test.zip",
+  "Images": ["http://localhost:8000/test.jpg"]
+}
+]"""]
+    out += ["""[
+{
+  "Name": "test repo 1",
+  "URL": "http://localhost/test.zip"
+},
+{
+  "Name": "test repo 2",
+  "URL": "http://localhost/test.zip"
+},
+{
+  "Name": "test repo 3",
   "URL": "http://localhost/test.zip"
 }
-]""", "utf-8"))
+]"""]
+    self.wfile.write(bytes(out[random.randint(0,1)], "utf-8"))
 
 myServer = HTTPServer((hostName, hostPort), MyServer)
 print(time.asctime(), "Server Starts - %s:%s" % (hostName, hostPort))
