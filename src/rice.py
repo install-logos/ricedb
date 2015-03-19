@@ -3,10 +3,10 @@ from rice import render
 
 a = render.Renderer()
 try:
-  while 1:
-    if a.loop():
-      break
+      while 1:
+          if a.loop():
+              break
 except Exception as e:
-  a.end()
-  print(str(e))
+      a.end()
+      print(str(e))
 
