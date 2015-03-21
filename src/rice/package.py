@@ -17,23 +17,28 @@ class Package(object):
     Handles downloading and installing rices for a specific package
     Deals with all functionality concerning configurations/packages
     """
-    def __init__(self, data, old=False):
+    def __init__(self, data, old=""):
         self.data = data
         self.downloaded = False
-        if old:
+        if not old == "":
             self.downloaded = True
         self.images = None
         self.program = None
         self.files = None
         self.conf_root = None
-        required_fields = ["Name", "URL", "Images", "Program", "Files", "Path"]
+        required_fields = ["name", "url", "program"]
+        optional_fields = ["images", "description"]
         for key in required_fields:
             value = self.data.get(key)
             if not value:
                 raise error.corruption_error('Could not determine {} of package'.format(key))
             setattr(self, key.lower(),value)
-        self.prog_path = util.RDBDIR + self.program
-        self.path = util.RBBDIR + self.program + '/'+ self.name
+        for key in optional_fields:
+            value = self.data.get(key)
+            if value:
+                setattr(self, key.lower(),value)
+        self.prog_path = util.RDBDIR + self.program + '/'
+        self.path = self.prog_path + self.name + '/'
         self.install_file = self.path + INSTALL
 
     def download(self):

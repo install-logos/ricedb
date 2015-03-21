@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
 import random
 
-hostName = "localhost"
+hostname = "localhost"
 hostPort = 9000
 
 class MyServer(BaseHTTPRequestHandler):
@@ -14,30 +14,30 @@ class MyServer(BaseHTTPRequestHandler):
     out = []
     out += ["""[
 {
-  "Name": "test repo",
-  "Description": "This is a sample of the description field.",
-  "URL": "http://localhost:8000/test.zip",
-  "Images": ["http://localhost:8000/test.jpg"]
+  "name": "test repo",
+  "description": "This is a sample of the description field.",
+  "url": "http://localhost:8000/test.zip",
+  "images": ["http://localhost:8000/test.jpg"]
 }
 ]"""]
     out += ["""[
 {
-  "Name": "test repo 1",
-  "URL": "http://localhost/test.zip"
+  "name": "test repo 1",
+  "url": "http://localhost/test.zip"
 },
 {
-  "Name": "test repo 2",
-  "URL": "http://localhost/test.zip"
+  "name": "test repo 2",
+  "url": "http://localhost/test.zip"
 },
 {
-  "Name": "test repo 3",
-  "URL": "http://localhost/test.zip"
+  "name": "test repo 3",
+  "url": "http://localhost/test.zip"
 }
 ]"""]
     self.wfile.write(bytes(out[random.randint(0,1)], "utf-8"))
 
-myServer = HTTPServer((hostName, hostPort), MyServer)
-print(time.asctime(), "Server Starts - %s:%s" % (hostName, hostPort))
+myServer = HTTPServer((hostname, hostPort), MyServer)
+print(time.asctime(), "Server Starts - %s:%s" % (hostname, hostPort))
 
 try:
   myServer.serve_forever()
@@ -45,4 +45,4 @@ except KeyboardInterrupt:
   pass
 
 myServer.server_close()
-print(time.asctime(), "Server Stops - %s:%s" % (hostName, hostPort))
+print(time.asctime(), "Server Stops - %s:%s" % (hostname, hostPort))
