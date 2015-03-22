@@ -17,6 +17,7 @@ class Query(object):
       try:
         request = urllib.request.Request(config["db"] + query)
         response = urllib.request.urlopen(request).read().decode('utf-8')
+        #print("Reponse is: " + response)
       except Exception as e:
         raise error.Error("Could not connect to server %s: %s" % (config["db"], e))
       try:
@@ -25,5 +26,12 @@ class Query(object):
         raise error.corruption_error("Could not read JSON from server: %s" %(e))
 
     def get_results(self):
-      return [package.Package(i) for i in self.results]
+      # print(self.results)
+      packs = []
+      for i in self.results:
+        #print(i)
+        packs.append(package.Package(self.results[i]))
+      return packs
+      #return self.results
+      # return [package.Package(i) for i in self.results]
 

@@ -54,10 +54,11 @@ class Renderer(object):
                       self.end()
                       return 1
                   results = query.Query(query_string).get_results()
+                  # print(results)
                   self.populate(results)
                   #self.index = 0 # Set selection to first result
               except Exception as e:
-                  print(str(e))
+                  print(e)
           else:
               self.handle_scroll()
           return 0
@@ -90,6 +91,7 @@ class Renderer(object):
           self.w3m.draw(temp_file, 1, x, y, w=iw, h=ih)
 
       def populate(self, results):
+          # print("Populate called w/ " + str(results))
           if not self.results == None:
               del self.results
           self.results = curses.newpad(max(len(results), curses.LINES - 1), curses.COLS//2)
@@ -98,10 +100,12 @@ class Renderer(object):
               self.results.insch(i, curses.COLS//2 - 2, curses.ACS_VLINE)
           i = 0
           for result in results:
+              print(result)
               self.results.addstr(i, 0, result.name)
               if (not result.images == None) and (self.w3m_enabled):
                   try:
                       temp_file = util.RDBDIR + 'tmp'
+                      print(result.images[0])
                       urllib.request.urlretrieve(result.images[0], temp_file)
                       self.draw_image(temp_file, curses.COLS - curses.COLS/2, SEARCHBAR_OFFSET, curses.COLS/2, curses.LINES - SEARCHBAR_OFFSET)
                   except Exception as e:

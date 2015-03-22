@@ -19,6 +19,7 @@ class Package(object):
     """
     def __init__(self, data, old=""):
         self.data = data
+        #print("Initialized with data + " + self.data)
         self.downloaded = False
         if not old == "":
             self.downloaded = True
@@ -40,7 +41,7 @@ class Package(object):
         self.prog_path = util.RDBDIR + self.program + '/'
         self.path = self.prog_path + self.name + '/'
         self.install_file = self.path + INSTALL
-
+        print("Initialized rice " + self.name)
     def download(self):
         # Get the path of the download
         if not (os.path.exists(util.RDBDIR) and os.path.isdir(util.RDBDIR)):
@@ -139,8 +140,7 @@ class Package(object):
                 os.chdir(self.prog_path)
                 switch_in(open('./.active').readline().rstrip())
                 raise error.corruption_error("Nonexistant files referenced in install.json")
-            os.rename('./' + k, os.expanduser(sel... for path, subdirs, files in os.walk("./"):
-                f.conf_root) + self.Files[k] + k)
+                os.rename('./' + k, os.expanduser(self.conf_root) + self.Files[k] + k)
         os.chdir(self.prog_path)
         with open('./.active','w') as fout:
             fout.write(self.name)
