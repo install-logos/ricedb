@@ -8,6 +8,7 @@ import curses.textpad
 import urllib.request
 import os
 from rice import query, w3m, util
+import ast
 
 SEARCHBAR_OFFSET = 2
 SEARCHLEFT_OFFSET = 8
@@ -20,6 +21,7 @@ class Renderer(object):
           self.scr.keypad(True) # let curses handle keys
           self.scr.clear()
           self.results = None
+          self.first_pic = True
           self.w3m_enabled = False
           if os.path.exists(w3m_binary):
               self.w3m = w3m.W3MImage_display(w3m_binary)
@@ -64,7 +66,7 @@ class Renderer(object):
           return 0
 
       # This will draw into a box defined by the passed in parameters
-      def draw_image(self, temp_file, x, y, w, h):
+      def draw_image(self, temp_file, x, y, w, h, re=False):
           # Font dimensions
           fw, fh = util.get_font_dimensions()
           # Image dimensions
@@ -87,9 +89,11 @@ class Renderer(object):
           # Get x, y coordinates
           x = x * fw + x_m
           y = y * fh + y_m
-
-          self.w3m.draw(temp_file, 1, x, y, w=iw, h=ih)
-
+          #self.w3m.clear(x, y, w=iw, h=ih)
+          if self.first_pic:
+              self.w3m.draw(temp_file, 1, x, y, w=iw, h=ih)
+          else:
+              self.w3m.redraw(temp_file, 1, x, y, w=iw, h=ih)
       def populate(self, results):
           # print("Populate called w/ " + str(results))
           if not self.results == None:
@@ -100,14 +104,18 @@ class Renderer(object):
               self.results.insch(i, curses.COLS//2 - 2, curses.ACS_VLINE)
           i = 0
           for result in results:
-              print(result)
+              # print(result)
               self.results.addstr(i, 0, result.name)
               if (not result.images == None) and (self.w3m_enabled):
                   try:
+                      images_array = ast.literal_eval(result.images) 
                       temp_file = util.RDBDIR + 'tmp'
-                      print(result.images[0])
-                      urllib.request.urlretrieve(result.images[0], temp_file)
+                      #os.remove(temp_file)
+                      # print(result.images[0])
+                      urllib.request.urlretrieve(images_array[0], temp_file)
                       self.draw_image(temp_file, curses.COLS - curses.COLS/2, SEARCHBAR_OFFSET, curses.COLS/2, curses.LINES - SEARCHBAR_OFFSET)
+                      if self.first_pic:
+                          self.first_pic = False
                   except Exception as e:
                       # Who cares? it's just a picture.
                       self.end()
