@@ -95,3 +95,4 @@ class Package(object):
         os.chdir(self.prog_path)
         with open('./.active','w') as fout:
             fout.write(self.name)
+        return self
