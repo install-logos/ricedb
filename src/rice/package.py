@@ -64,6 +64,7 @@ class Package(object):
         with open(self.install_file, 'w') as fout:
             json.dump(self.data, fout)
         self.downloaded = True
+        return self
 
     def install(self):
         if not self.downloaded:
@@ -81,8 +82,8 @@ class Package(object):
                 file_locs = self.install_data['Files']
             else:
                 raise error.corruption_error("Could not read the files in the JSON")
-        self.switch_out()
-        self.switch_in()
+        self.switch_out().switch_in()
+        return self
 
     def switch_out(self):
         os.chdir(self.prog_path)
@@ -131,6 +132,7 @@ class Package(object):
             json_data.write(json.JSONEncoder().encode(file_list))
             json_data.write(json.JSONEncoder().encode({"Path":directory}))
             json_data.close()
+        return self
     def switch_in(self):
         os.chdir(self.path)
         if not (os.path.exists(self.conf_root)):
@@ -144,3 +146,4 @@ class Package(object):
         os.chdir(self.prog_path)
         with open('./.active','w') as fout:
             fout.write(self.name)
+        return self
