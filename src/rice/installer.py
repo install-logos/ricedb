@@ -65,8 +65,6 @@ class Installer(object):
         for name in z.namelist():
             z.extract(name, path)
         os.remove(temp_file)
-        with open(self.install_file, 'w') as fout:
-            json.dump(self.data, fout)
 
     def install(self):
         self.switch_out()

@@ -8,7 +8,7 @@ import json
 from rice import error, util, package
 
 class Query(object):
-    def __init__(self, query):
+    def __init__(self, program_name, search_term):
       with open(util.RDBDIR + "config") as config_file:
         try:
           config = json.load(config_file)

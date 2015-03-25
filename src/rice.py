@@ -51,13 +51,13 @@ class Rice(object):
 		"""
 		if args.sync:
 		    # -S option used,
-                    self.install_rice(args.sync)
+                    self.install_rice(args.sync[0], args.sync[1])
 		elif args.swap:
 		    # -s option used,
-                    self.swap_rice(args.swap)
+                    self.swap_rice(args.swap[0], args.swap[1])
 		elif len(args.rice) > 1:
 		    # Program name + keyword specified
-                    self.search_rice(args.rice)
+                    self.search_rice(args.rice[0], args.rice[1])
 		elif len(args.rice) == 1:
 		    # Only the program name is mentionned
 		    # This returns to the user popular software
@@ -71,7 +71,7 @@ class Rice(object):
             search = Query(prog_name, rice_name)
             result = search.get_local_results()
             if result:
-                installer = Installer(result.program, result.name)
+                installer = installer.Installer(result.program, result.name)
                 installer.install()
             else:
                 print("This rice you tried to install does not exist locally, please try again")
@@ -84,7 +84,7 @@ class Rice(object):
 	    results = search.get_results() 
             if len(results) == 1:
                 temp_pack = results[0]
-                installer = Installer(temp_pack.program, temp_pack.name, temp_pack.url)
+                installer = installer.Installer(temp_pack.program, temp_pack.name, temp_pack.url)
                 installer.download()
                 installer.install()
             else:
@@ -95,9 +95,9 @@ class Rice(object):
             search = Query(prog_name, keyword)
             results = search.get_results()
             #Do something with Render
-            renderer = Render(results) 
+            renderer = render.Render(results) 
             selection = renderer.prompt()
-            installer = Installer(selection.program, selection.name, selection.url)
+            installer = installer.Installer(selection.program, selection.name, selection.url)
             installer.download()
             installer.install()
 
