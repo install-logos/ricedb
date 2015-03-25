@@ -25,25 +25,27 @@ class Installer(object):
         self.prog_path = util.RDBDIR + self.program + '/'
         self.path = self.prog_path + self.name + '/'
         if url == "":
-            self.local = True
-            self.install_file = self.path + INSTALL
-            if not (os.path.exists(install_file) and os.path.isfile(install_file)):
-                raise error.corruption_error("Package has no install file.")
-            with open(self.install_file) as f:
-                try:
-                    self.install_data = json.load(f)
-                except Exception as e:
-                    raise error.corruption_error("Could not read JSON: %s" %(e))
-                ## Now execute the installation
-                if "files" in self.install_data:
-                    self.files = self.install_data['files']
-                else:
-                    raise error.corruption_error("Could not read the files in the JSON")
-                if "conf_root" in self.install_data:
-                    self.conf_root = self.install_data["conf_root"]
-                else:
-                    raise error.corruption_error("Could not read the config root in the JSON")
-    
+            self.check_files
+
+    def check_files(self): 
+        self.local = True
+        self.install_file = self.path + INSTALL
+        if not (os.path.exists(install_file) and os.path.isfile(install_file)):
+            raise error.corruption_error("Package has no install file.")
+        with open(self.install_file) as f:
+            try:
+                self.install_data = json.load(f)
+            except Exception as e:
+                raise error.corruption_error("Could not read JSON: %s" %(e))
+            if "files" in self.install_data:
+                self.files = self.install_data['files']
+            else:
+                raise error.corruption_error("Could not read the files in the JSON")
+            if "conf_root" in self.install_data:
+                self.conf_root = self.install_data["conf_root"]
+            else:
+                raise error.corruption_error("Could not read the config root in the JSON")
+
     def download(self):
         # Get the path of the download
         if self.local:
@@ -65,6 +67,7 @@ class Installer(object):
         for name in z.namelist():
             z.extract(name, path)
         os.remove(temp_file)
+        self.check_files()
 
     def install(self):
         self.switch_out()
