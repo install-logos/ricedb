@@ -7,7 +7,7 @@ import json
 import os
 import urllib.request
 import zipfile
-from rice import error, util
+from rice import error, util, render
 
 TMPEXTENSION = "-tmp.zip"
 INSTALL = "install.json"
@@ -73,13 +73,16 @@ class Installer(object):
         self.switch_out()
         self.switch_in()
 
+    # Checks if the currently installed rice is defined in riceDB, returns True if it is, False if not
+    def check_install():
+        os.chdir(self.prog_path)
+        # If there isn't an active riceDB rice, create a new local rice
+        return (os.path.exists('./.active') and os.path.isfile('./.active')
+        
     def switch_out(self):
         os.chdir(self.prog_path)
         # If there isn't an active riceDB rice, create a new local rice
-        if not (os.path.exists('./.active') and os.path.isfile('./.active')):
-            current_name = util.create_rice()
-        else:
-            current_name = open('./active').readline().rstrip()
+        current_name = open('./active').readline().rstrip()
         os.chdir(self.prog_path + current_name)
         old_install_file = self.prog_path + current_name + '/' + INSTALL
         if not (os.path.exists(old_install_file) and os.path.isfile(old_install_file)):

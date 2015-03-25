@@ -67,37 +67,3 @@ def get_font_dimensions():
           ypixels += 2
       return (xpixels // cols), (ypixels // rows)
 
-def create():
-    directory = ""
-    file_list = {}
-    print("Please specify the name of the rice")
-    rice_name = input()
-    while os.path.exists(self.prog_path + rice_name):
-        print("Please use a rice name that is not already used")
-        answer = input()
-        if answer == "q":
-            exit()
-        else:
-            rice_name = answer
-    print("Please specify the root directory of your config files e.g. for i3 type in ~/.i3/")
-    directory = os.expanduser(input())
-    while not os.path.exists(directory):
-        print("The specified directory does not exist. Try again or use q to quit")
-        answer = input()
-        if answer == "q":
-            exit()
-        else:
-            directory = os.expanduser(answer)
-    os.chdir(directory)
-    for path, subdirs, files in os.walk("./"):
-        for name in files:
-            # This will use a ./, but this will be ok, though admittedly sketchy
-            file_list[name] = path
-    os.chdir(self.prog_path)
-    os.mkdir(rice_name)
-    os.chdir(rice_name)
-    install_data = open("install.json")
-    json.load(install_data)
-    json_data.write(json.JSONEncoder().encode(file_list))
-    json_data.write(json.JSONEncoder().encode({"Path":directory}))
-    json_data.close()
