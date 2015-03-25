@@ -51,16 +51,13 @@ class Rice(object):
 		"""
 		if args.sync:
 		    # -S option used,
-		    query.Query(args.sync)
+                    self.install_rice(args.sync)
 		elif args.swap:
 		    # -s option used,
-		   pass
+                    self.swap_rice(args.swap)
 		elif len(args.rice) > 1:
 		    # Program name + keyword specified
-		    results = query.Query(args.rice[1:])
-		    # RENDER will handle this
-		    for result in results:
-		    	print(result.name)
+                    self.search_rice(args.rice)
 		elif len(args.rice) == 1:
 		    # Only the program name is mentionned
 		    # This returns to the user popular software
@@ -69,6 +66,40 @@ class Rice(object):
 		else:
 		    print("You must run rice.py with inputs. Try rice.py -h if you're unsure how to use the program")
 		    exit()
+                    
+        def swap_rice(prog_name, rice_name):
+            search = Query(prog_name, rice_name)
+            result = search.get_local_results()
+            if result:
+                installer = Installer(result.program, result.name)
+                installer.install()
+            else:
+                print("This rice you tried to install does not exist locally, please try again")
+                exit()
+
+        # Takes a program and rice name, queries for results. If there is more than one it exits and gives an error
+        def install_rice(prog_name, rice_name):
+            search = Query(prog_name, rice_name)
+            # results is a list of packages
+	    results = search.get_results() 
+            if len(results) == 1:
+                temp_pack = results[0]
+                installer = Installer(temp_pack.program, temp_pack.name, temp_pack.url)
+                installer.download()
+                installer.install()
+            else:
+                print("Error, you did not specify a valid rice name, please try again")
+                exit()
+
+        def search_rice(prog_name, keyword):
+            search = Query(prog_name, keyword)
+            results = search.get_results()
+            #Do something with Render
+            renderer = Render(results) 
+            selection = renderer.prompt()
+            installer = Installer(selection.program, selection.name, selection.url)
+            installer.download()
+            installer.install()
 
 	def run(self):
 		self.build_arguments()
