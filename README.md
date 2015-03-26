@@ -1,6 +1,6 @@
 <h1 align="center">
 <sub>
-<img src="http://i.imgur.com/MI5Z0PO.png"
+<img src="http://i.imgur.com/FvQ3Lvx.png"
       width="740">
       <img src="http://i.imgur.com/QR1AaJi.png"
       width="740">
