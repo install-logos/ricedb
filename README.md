@@ -1,8 +1,8 @@
 <h1 align="center">
 <sub>
-<img src="https://cloud.githubusercontent.com/assets/5554865/6818683/98c05d74-d271-11e4-851f-7006bc5337e9.png"
-      height="315"
-      width="775">
+<img src="http://i.imgur.com/VzoJo7a.png"
+      height="332"
+      width="732">
 </sub>
 </h1>
 <strong>RiceDB</strong> will be a universal configuration file manager designed to make it easy to obtain configurations for any application that fit your individual needs.
