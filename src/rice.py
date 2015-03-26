@@ -139,7 +139,7 @@ class Rice(object):
             json_data.close()
             self.update_localdb(rice_name, prog_name)
 
-    def update_localdb(self, rice_name, prog_name):
+        def update_localdb(self, rice_name, prog_name):
             with open(util.RDBDIR + "config") as config_file:
                 try:
                     config = json.load(config_file)
@@ -151,10 +151,10 @@ class Rice(object):
             with open(config["localdb"],"w") as fout:
                 json.dump(local_rices,fout)
 
-    def run(self):
-        self.renderer = render.Render()
-        self.build_arguments()
-        self.handle_args(self.parser.parse_args())
+        def run(self):
+            self.renderer = render.Render()
+            self.build_arguments()
+            self.handle_args(self.parser.parse_args())
 
 if __name__ == '__main__':
     main = Rice()
