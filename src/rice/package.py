@@ -11,8 +11,6 @@ class Package(object):
 
     if ("url" in self.data):
       self.url = self.data["url"]
-    else:
-      raise error.CorruptionError("Could not determine URL of package.")
 
     if ("program" in self.data):
         self.program = self.data["program"]

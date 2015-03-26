@@ -67,7 +67,7 @@ class Rice(object):
             print("You must run rice.py with inputs. Try rice.py -h if you're unsure how to use the program")
             exit()
                     
-        def swap_rice(prog_name, rice_name):
+        def swap_rice(self, prog_name, rice_name):
             search = Query(prog_name, rice_name)
             result = search.get_local_results()
             if result:
@@ -78,7 +78,7 @@ class Rice(object):
                 exit()
 
         # Takes a program and rice name, queries for results. If there is more than one it exits and gives an error
-        def install_rice(prog_name, rice_name):
+        def install_rice(self, prog_name, rice_name):
             search = Query(prog_name, rice_name)
             # results is a list of packages
             results = search.get_results() 
@@ -87,11 +87,12 @@ class Rice(object):
                 installer = installer.Installer(temp_pack.program, temp_pack.name, temp_pack.url)
                 installer.download()
                 installer.install()
+                self.update_localdb(temp_pack.name, temp_pack.program)
             else:
                 print("Error, you did not specify a valid rice name, please try again")
                 exit()
 
-        def search_rice(prog_name, keyword):
+        def search_rice(self, prog_name, keyword):
             search = Query(prog_name, keyword)
             results = search.get_results()
             #Do something with Render
@@ -101,8 +102,9 @@ class Rice(object):
             if not installer.check_install():
                 self.create_rice(prog_name)
             installer.install()
-            
-        def create_rice(prog_name):
+            self.update_localdb(selection.name, selection.program)
+
+        def create_rice(self, prog_name):
             directory = ""
             file_list = {}
             rice_name = self.renderer.prompt("Please specify the name of the rice")
@@ -132,9 +134,22 @@ class Rice(object):
             os.chdir(rice_name)
             install_data = open("install.json")
             json.load(install_data)
-            json_data.write(json.JSONEncoder().encode(file_list))
-            json_data.write(json.JSONEncoder().encode({"Path":directory}))
+            json_data.write(json.JSONEncoder().encode("files":file_list))
+            json_data.write(json.JSONEncoder().encode({"path":directory}))
             json_data.close()
+            self.update_localdb(rice_name, prog_name)
+
+    def update_localdb(self, rice_name, prog_name):
+            with open(util.RDBDIR + "config") as config_file:
+                try:
+                    config = json.load(config_file)
+                except Exception as e:
+                    raise error.corruption_error("Invalid JSON: %s" %(e))
+            with open(config["localdb"]) as local_db:
+                local_rices = json.load(local_db)
+                local_rices.update({rice_name:{"name":rice_name,"program":prog_name}})
+            with open(config["localdb"],"w") as fout:
+                json.dump(local_rices,fout)
 
     def run(self):
         self.renderer = render.Render()
