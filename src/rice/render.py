@@ -15,18 +15,21 @@ SEARCHLEFT_OFFSET = 8
 
 class Renderer(object):
     def __init__(self, w3m_binary='/usr/lib/w3m/w3mimgdisplay'):
+        """
         self.scr = curses.initscr()
         curses.noecho()         # don't echo characters
         curses.cbreak()         # no key buffering
         self.scr.keypad(True) # let curses handle keys
         self.scr.clear()
+        """
         self.results = None
         self.first_pic = True
         self.w3m_enabled = False
+
         if os.path.exists(w3m_binary):
           self.w3m = w3m.W3MImage_display(w3m_binary)
           self.w3m_enabled = True
-    
+        """ 
         # Create a search box
         self.scr.addstr(0, 0, "Search:")
         self.textarea = curses.newwin(1, curses.COLS - 2, 0, SEARCHLEFT_OFFSET)
@@ -40,7 +43,7 @@ class Renderer(object):
 
         # Set selection index to search
         self.index = -1
-
+        """
     def handle_scroll(self):
         k = self.scr.getkey()
         self.end()
