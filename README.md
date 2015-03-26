@@ -3,6 +3,8 @@
 <img src="http://i.imgur.com/MI5Z0PO.png"
       height="332"
       width="732">
+      <img src="http://i.imgur.com/QR1AaJi.png"
+      width="732">
 </sub>
 </h1>
 <strong>RiceDB</strong> will be a universal configuration file manager designed to make it easy to obtain configurations for any application that fit your individual needs.
