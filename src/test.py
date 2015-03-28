@@ -17,6 +17,11 @@ class testInstaller(unittest.TestCase):
         self.assertFalse(os.path.exists(os.expanduser("~/.rdb/i3/test1/config")))
         self.assertTrue(os.path.exists(os.expanduser("~/.rdb/i3/test1/install.json")))
 
+# Add in Query Return Test
+
+# Add in Package Initialization Test
+
+# Entire Pipeline should be tested
 
 if __name=="main"__:
     unittest.main()
