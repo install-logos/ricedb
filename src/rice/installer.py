@@ -111,11 +111,9 @@ class Installer(object):
                 raise error.corruption_error("Could not read the files in the JSON")
             if "conf_root" in old_install_data:
                 old_conf_root = os.path.expanduser(old_install_data["conf_root"])
-                print(old_conf_root)
             else:
                 raise error.corruption_error("Could not read the config root in the JSON")
         for k in old_files.keys():
-            print(k)
             if not os.path.exists(old_conf_root + old_files[k] + k):
                 raise error.corruption_error("Could not find the files specified in the rice")
             os.rename(old_conf_root + old_files[k] + k, './' + k)
@@ -129,7 +127,18 @@ class Installer(object):
                 os.chdir(self.prog_path)
                 switch_in(open('./.active').readline().rstrip())
                 raise error.corruption_error("Nonexistant files referenced in install.json")
-            os.rename('./' + k, os.path.expanduser(self.conf_root) + self.files[k] + k)
+            self.validate_dir(self.conf_root + self.files[k])
+            os.rename('./' + k, self.conf_root + self.files[k] + k)
         os.chdir(self.prog_path)
         with open('./.active','w') as fout:
             fout.write(self.name)
+
+    #Makes folders in config_root if necessary
+    def validate_dir(full_path):
+        if full_path[len(full_path)-1]:
+            full_path = full_path[:len(full_path)-1]
+        os.chdir(self.conf_root)
+        while not os.path.split(full_path)[0] == '.':
+            if not os.path.exists(full_path):
+                os.makedirs(full_path)
+            full_path = os.path.split(full_path)
