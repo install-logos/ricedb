@@ -1,4 +1,6 @@
 #!/bin/env python
+import json
+import os
 from rice import package, query, render, util, installer, error
 import argparse
 
@@ -145,12 +147,12 @@ class Rice(object):
                 config = json.load(config_file)
             except Exception as e:
                 raise error.corruption_error("Invalid JSON: %s" %(e))
-        with open(config["localdb"]) as local_db:
+        with open(os.path.expanduser(config["localdb"])) as local_db:
             local_rices = json.load(local_db)
             if not prog_name in local_rices:
                 local_rices.update({prog_name:[]})
             local_rices[prog_name].append(rice_name)
-        with open(config["localdb"],"w") as fout:
+        with open(os.path.expanduser(config["localdb"]),"w") as fout:
             json.dump(local_rices,fout)
 
     def run(self):

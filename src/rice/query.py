@@ -17,13 +17,15 @@ class Query(object):
                 raise error.corruption_error("Invalid JSON: %s" %(e))
         if not local:
             try:
-                request = urllib.request.Request(config["db"] + query)
+                # Will be modified to accept the query once testing is complete
+                request = urllib.request.Request(config["db"])
                 response = urllib.request.urlopen(request).read().decode('utf-8')
                 #print("Reponse is: " + response)
             except Exception as e:
                 raise error.Error("Could not connect to server %s: %s" % (config["db"], e))
             try:
-                self.results = json.loads(response)
+                # This line should be modified post testing
+                self.results = json.loads(response)["package"]
             except Exception as e:
                 raise error.corruption_error("Could not read JSON from server: %s" %(e))
         else:
@@ -34,8 +36,10 @@ class Query(object):
             else:
                 self.results = []
     def get_results(self):
-        # print(self.results)
+        print(self.results)
         packs = []
+        if type(self.results) is dict:
+            return [package.Package(self.results)]
         for i in self.results:
             #print(i)
             packs.append(package.Package(i))
