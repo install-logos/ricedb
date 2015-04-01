@@ -68,40 +68,40 @@ class Rice(object):
             exit()
                     
     def swap_rice(self, prog_name, rice_name):
-            search = Query(prog_name, rice_name)
-            result = search.get_local_results()
+            search = query.Query(prog_name, rice_name, True)
+            result = search.get_results()
             if result:
-                installer = installer.Installer(result.program, result.name)
-                installer.install()
+                rice_installer = installer.Installer(prog_name, rice_name)
+                rice_installer.install()
             else:
                 print("This rice you tried to install does not exist locally, please try again")
                 exit()
 
         # Takes a program and rice name, queries for results. If there is more than one it exits and gives an error
     def install_rice(self, prog_name, rice_name):
-            search = Query(prog_name, rice_name)
+            search = query.Query(prog_name, rice_name)
            # results is a list of packages
             results = search.get_results() 
             if len(results) == 1:
                 temp_pack = results[0]
-                installer = installer.Installer(temp_pack.program, temp_pack.name, temp_pack.url)
-                installer.download()
-                installer.install()
+                rice_installer = installer.Installer(temp_pack.program, temp_pack.name, temp_pack.url)
+                rice_installer.download()
+                rice_installer.install()
                 self.update_localdb(temp_pack.name, temp_pack.program)
             else:
                 print("Error, you did not specify a valid rice name, please try again")
                 exit()
 
     def search_rice(self, prog_name, keyword):
-        search = Query(prog_name, keyword)
+        search = query.Query(prog_name, keyword)
         results = search.get_results()
         #Do something with Render
         selection = self.renderer.pick_packs(results) 
-        installer = installer.Installer(selection.program, selection.name, selection.url)
-        installer.download()
-        if not installer.check_install():
+        rice_installer = installer.Installer(selection.program, selection.name, selection.url)
+        rice_installer.download()
+        if not rice_installer.check_install():
             self.create_rice(prog_name)
-        installer.install()
+        rice_installer.install()
         self.update_localdb(selection.name, selection.program)
 
     def create_rice(self, prog_name):
@@ -147,7 +147,9 @@ class Rice(object):
                 raise error.corruption_error("Invalid JSON: %s" %(e))
         with open(config["localdb"]) as local_db:
             local_rices = json.load(local_db)
-            local_rices.update({rice_name:{"name":rice_name,"program":prog_name}})
+            if not prog_name in local_rices:
+                local_rices.update({prog_name:[]})
+            local_rices[prog_name].append(rice_name)
         with open(config["localdb"],"w") as fout:
             json.dump(local_rices,fout)
 

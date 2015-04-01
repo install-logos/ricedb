@@ -127,18 +127,22 @@ class Installer(object):
                 os.chdir(self.prog_path)
                 switch_in(open('./.active').readline().rstrip())
                 raise error.corruption_error("Nonexistant files referenced in install.json")
-            self.validate_dir(self.conf_root + self.files[k])
+            self.validate_dir(self.files[k])
             os.rename('./' + k, self.conf_root + self.files[k] + k)
         os.chdir(self.prog_path)
         with open('./.active','w') as fout:
             fout.write(self.name)
 
-    #Makes folders in config_root if necessary
-    def validate_dir(full_path):
+    # Makes folders in config_root if necessary
+    def validate_dir(self,full_path):
+        if full_path == "./":
+            return
         if full_path[len(full_path)-1]:
             full_path = full_path[:len(full_path)-1]
         os.chdir(self.conf_root)
-        while not os.path.split(full_path)[0] == '.':
+        print(os.path.split(full_path))
+        # Seems to bug up, should be checked
+        while not (os.path.split(full_path)[0] == '.'):
             if not os.path.exists(full_path):
                 os.makedirs(full_path)
             full_path = os.path.split(full_path)
