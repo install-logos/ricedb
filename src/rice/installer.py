@@ -43,9 +43,20 @@ class Installer(object):
             else:
                 raise error.corruption_error("Could not read the files in the JSON")
             if "conf_root" in self.install_data:
-                self.conf_root = self.install_data["conf_root"]
+                self.conf_root = os.path.expanduser(self.install_data["conf_root"])
             else:
                 raise error.corruption_error("Could not read the config root in the JSON")
+
+    def validate_extraction(self):
+        os.chdir(self.path)
+        path_files = os.listdir('.')
+        # Remove files from sub folder
+        if len(path_files) == 1 and os.path.isdir(path_files[0]):
+            os.chdir(path_files[0])
+            for f in os.listdir('.'):
+                os.rename('./'+f,'../'+f)
+        os.chdir('../')
+        os.rmdir(path_files[0])
 
     def download(self):
         # Get the path of the download
@@ -67,6 +78,7 @@ class Installer(object):
         z = zipfile.ZipFile(temp_file)
         for name in z.namelist():
             z.extract(name, self.path)
+        self.validate_extraction()
         os.remove(temp_file)
         self.check_files()
 
@@ -83,7 +95,7 @@ class Installer(object):
     def switch_out(self):
         os.chdir(self.prog_path)
         # If there isn't an active riceDB rice, create a new local rice
-        current_name = open('./active').readline().rstrip()
+        current_name = open('./.active').readline().rstrip()
         os.chdir(self.prog_path + current_name)
         old_install_file = self.prog_path + current_name + '/' + INSTALL
         if not (os.path.exists(old_install_file) and os.path.isfile(old_install_file)):
@@ -98,13 +110,15 @@ class Installer(object):
             else:
                 raise error.corruption_error("Could not read the files in the JSON")
             if "conf_root" in old_install_data:
-                old_conf_root = old_install_data["conf_root"]
+                old_conf_root = os.path.expanduser(old_install_data["conf_root"])
+                print(old_conf_root)
             else:
                 raise error.corruption_error("Could not read the config root in the JSON")
         for k in old_files.keys():
+            print(k)
             if not os.path.exists(old_conf_root + old_files[k] + k):
                 raise error.corruption_error("Could not find the files specified in the rice")
-            os.rename(os.expanduser(old_conf_root + old_files[k] + k), './' + k)
+            os.rename(old_conf_root + old_files[k] + k, './' + k)
 
     def switch_in(self):
         os.chdir(self.path)
@@ -115,7 +129,7 @@ class Installer(object):
                 os.chdir(self.prog_path)
                 switch_in(open('./.active').readline().rstrip())
                 raise error.corruption_error("Nonexistant files referenced in install.json")
-                os.rename('./' + k, os.expanduser(self.conf_root) + self.files[k] + k)
+            os.rename('./' + k, os.path.expanduser(self.conf_root) + self.files[k] + k)
         os.chdir(self.prog_path)
         with open('./.active','w') as fout:
             fout.write(self.name)
