@@ -128,7 +128,7 @@ class Renderer(object):
 
         self.results.noutrefresh(0, 0, SEARCHBAR_OFFSET, 0, curses.LINES-1, curses.COLS-1)
 
-    def prompt(message):
+    def prompt(self, message):
         print(message)
         return input()
     # View for user to select a package from a list of options

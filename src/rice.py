@@ -74,6 +74,8 @@ class Rice(object):
             result = search.get_results()
             if result:
                 rice_installer = installer.Installer(prog_name, rice_name)
+                if not rice_installer.check_install():
+                    self.create_rice(prog_name)
                 rice_installer.install()
             else:
                 print("This rice you tried to install does not exist locally, please try again")
@@ -110,22 +112,22 @@ class Rice(object):
         directory = ""
         file_list = {}
         rice_name = self.renderer.prompt("Please specify the name of the rice")
-        while os.path.exists(util.RBDIR + "/" + prog_name + "/" + rice_name):
+        while os.path.exists(util.RDBDIR + "/" + prog_name + "/" + rice_name):
             answer = self.renderer.prompt("Please use a rice name that is not already used")
             if answer == "q":
                 exit()
             else:
                 rice_name = answer
-        os.chdir(RBDIR + '/' + prog_name)
+        os.chdir(util.RDBDIR + '/' + prog_name)
         with open('./.active','w') as fout:
             fout.write(rice_name)
-        directory = os.expanduser(self.renderer.prompt("Please specify the root directory of your config files e.g. for i3 type in ~/.i3/"))
+        directory = os.path.expanduser(self.renderer.prompt("Please specify the root directory of your config files e.g. for i3 type in ~/.i3/"))
         while not os.path.exists(directory):
             answer = self.renderer.prompt("The specified directory does not exist. Try again or use q to quit")
             if answer == "q":
                 exit()
             else:
-                directory = os.expanduser(answer)
+                directory = os.path.expanduser(answer)
         os.chdir(directory)
         for path, subdirs, files in os.walk("./"):
             for name in files:
@@ -134,11 +136,11 @@ class Rice(object):
         os.chdir(util.RDBDIR + "/" + prog_name)
         os.mkdir(rice_name)
         os.chdir(rice_name)
-        install_data = open("install.json")
-        json.load(install_data)
-        json_data.write(json.JSONEncoder().encode({"files":file_list}))
-        json_data.write(json.JSONEncoder().encode({"path":directory}))
-        json_data.close()
+        json_data = {}
+        json_data["files"] = file_list
+        json_data["conf_root"] = directory
+        with open('install.json','w') as fout:
+            json.dump(json_data, fout, ensure_ascii=False)
         self.update_localdb(rice_name, prog_name)
 
     def update_localdb(self, rice_name, prog_name):
