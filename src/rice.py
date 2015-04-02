@@ -130,6 +130,8 @@ class Rice(object):
                 exit()
             else:
                 rice_name = answer
+        if not os.path.exists(util.RDBDIR + '/' + prog_name):
+            os.makedirs(util.RDBDIR + '/' + prog_name)
         os.chdir(util.RDBDIR + '/' + prog_name)
         if not os.path.exists('./.active'):
             with open('./.active','w') as fout:
@@ -158,11 +160,13 @@ class Rice(object):
                     answer = self.renderer.prompt("The specified file does not exist. Try again or use q to quit, or n to continue")
                     if answer == "q":
                         exit()
-                    else if answer == "n":
+                    elif answer == "n":
                         break
                     else:
                         config_file = os.path.expanduser(answer)
                 else:
+                    loc, name = os.path.split(config_file)
+                    file_list[name] = loc + '/'
                     answer = self.renderer.prompt("Would you like to select another file? y/n")
                     while not (answer == "y" or answer == "n"):
                         answer = self.renderer.prompt("Please respond with y or n")
