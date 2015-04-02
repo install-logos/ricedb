@@ -123,6 +123,7 @@ class Rice(object):
     def create_rice(self, prog_name):
         directory = ""
         file_list = {}
+        installed = False
         rice_name = self.renderer.prompt("Please specify the name of the rice")
         while os.path.exists(util.RDBDIR + "/" + prog_name + "/" + rice_name):
             answer = self.renderer.prompt("Please use a rice name that is not already used")
@@ -136,6 +137,9 @@ class Rice(object):
         if not os.path.exists('./.active'):
             with open('./.active','w') as fout:
                 fout.write(rice_name)
+        else:
+            installed = True
+            self.renderer.alert("Since you already have a rice installed, you will need to specify where the files of the rice you want to package are located as well as the location where the files should be installed. Please ensure that the folder where you're storing the configuration files mimics the true config files location in structure and file names")
         directory = os.path.expanduser(self.renderer.prompt("Please specify the root directory of your config files e.g. for i3 type in ~/.i3/"))
         while not os.path.exists(directory):
             answer = self.renderer.prompt("The specified directory does not exist. Try again or use q to quit")
@@ -144,6 +148,15 @@ class Rice(object):
             else:
                 directory = os.path.expanduser(answer)
         os.chdir(directory)
+        if installed:
+            loc = os.path.expanduser(self.renderer.prompt("Please specify the folder where your config files are being held"))
+            while not os.path.exists(loc):
+                answer = self.renderer.prompt("The specified directory does not exist. Try again or use q to quit")
+                if answer == "q":
+                    exit()
+                else:
+                    loc = os.path.expanduser(answer)
+            os.chdir(loc)
         select_files = self.renderer.prompt("Would you like to select individual files in the config folder(files are automatically detected otherwise)? y/n")
         while not (select_files == "y" or select_files == "n"):
             select_files = self.renderer.prompt("Please respond with y or n")

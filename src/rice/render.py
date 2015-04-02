@@ -127,6 +127,8 @@ class Renderer(object):
           i += 1
 
         self.results.noutrefresh(0, 0, SEARCHBAR_OFFSET, 0, curses.LINES-1, curses.COLS-1)
+    def alert(self, message):
+        print(message)
 
     def prompt(self, message):
         print(message)
