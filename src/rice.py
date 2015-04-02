@@ -46,6 +46,15 @@ class Rice(object):
             """
         )
 
+        self.parser.add_argument(
+        '-c', '--create', nargs=1, type=str,
+        help = """
+        Packages a rice for a given program into a riceDB rice which can be
+        swapped or uploaded.
+        USAGE: rice -c <program_name>
+        """
+        )
+
     def handle_args(self, args):
         """
         Determines the appropriate APIs to invoke based
@@ -65,6 +74,9 @@ class Rice(object):
             # This returns to the user popular software
             # TODO: implement this later
             print("Please specify a search term")
+        elif args.create:
+            # -c option used
+                self.create_rice(args.create[0])
         else:
             print("You must run rice.py with inputs. Try rice.py -h if you're unsure how to use the program")
             exit()
@@ -119,8 +131,9 @@ class Rice(object):
             else:
                 rice_name = answer
         os.chdir(util.RDBDIR + '/' + prog_name)
-        with open('./.active','w') as fout:
-            fout.write(rice_name)
+        if not os.path.exists('./.active'):
+            with open('./.active','w') as fout:
+                fout.write(rice_name)
         directory = os.path.expanduser(self.renderer.prompt("Please specify the root directory of your config files e.g. for i3 type in ~/.i3/"))
         while not os.path.exists(directory):
             answer = self.renderer.prompt("The specified directory does not exist. Try again or use q to quit")
@@ -129,10 +142,31 @@ class Rice(object):
             else:
                 directory = os.path.expanduser(answer)
         os.chdir(directory)
-        for path, subdirs, files in os.walk("./"):
-            for name in files:
-                # This will use a ./, but this will be ok, though admittedly sketchy
-                file_list[name] = path
+        select_files = self.renderer.prompt("Would you like to select individual files in the config folder(files are automatically detected otherwise)? y/n")
+        while not (select_files == "y" or select_files == "n"):
+            select_files = self.renderer.prompt("Please respond with y or n")
+        if select_files == "n":
+            for path, subdirs, files in os.walk("./"):
+                for name in files:
+                    # This will use a ./, but this should be ok, though admittedly redundant
+                    file_list[name] = path
+        else:
+            answer = ""
+            config_file = os.path.expanduser(self.renderer.prompt("Please specify the location of a config file within the config folder, starting with ./ e.g. if you are specifyinga file called colors.config in some folder 'extra' in your config folder, type ./extra/colors.config"))
+            while not answer == "n":
+                while not os.path.exists(config_file):
+                    answer = self.renderer.prompt("The specified file does not exist. Try again or use q to quit, or n to continue")
+                    if answer == "q":
+                        exit()
+                    else if answer == "n":
+                        break
+                    else:
+                        config_file = os.path.expanduser(answer)
+                else:
+                    answer = self.renderer.prompt("Would you like to select another file? y/n")
+                    while not (answer == "y" or answer == "n"):
+                        answer = self.renderer.prompt("Please respond with y or n")
+        
         os.chdir(util.RDBDIR + "/" + prog_name)
         os.mkdir(rice_name)
         os.chdir(rice_name)
