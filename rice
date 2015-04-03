@@ -1,0 +1,5 @@
+#!/usr/bin/python -O
+import riceDB
+import sys
+
+sys.exit(riceDB.Rice().run())
