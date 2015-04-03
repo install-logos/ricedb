@@ -33,5 +33,5 @@ setup(
     license='GPL V3',
 
     install_requires=[],
-    packages=['src']
+    packages=['src','src/rice']
 )

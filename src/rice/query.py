@@ -29,14 +29,12 @@ class Query(object):
             except Exception as e:
                 raise error.corruption_error("Could not read JSON from server: %s" %(e))
         else:
-            print(os.path.expanduser(config["localdb"]))
             rices = json.load(open(os.path.expanduser(config["localdb"])))
             if search_term in rices[program_name]:
                 self.results = [{"name":search_term,"program":program_name}]
             else:
                 self.results = []
     def get_results(self):
-        print(self.results)
         packs = []
         if type(self.results) is dict:
             return [package.Package(self.results)]

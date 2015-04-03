@@ -30,7 +30,6 @@ class Installer(object):
     def check_files(self): 
         self.local = True
         self.install_file = self.path + INSTALL
-        print(self.path)
         if not (os.path.exists(self.install_file) and os.path.isfile(self.install_file)):
             raise error.corruption_error("Package has no install file.")
         with open(self.install_file) as f:
@@ -140,7 +139,6 @@ class Installer(object):
         if full_path[len(full_path)-1]:
             full_path = full_path[:len(full_path)-1]
         os.chdir(self.conf_root)
-        print(os.path.split(full_path))
         # Seems to bug up, should be checked
         while not (os.path.split(full_path)[0] == '.'):
             if not os.path.exists(full_path):
