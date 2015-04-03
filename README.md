@@ -16,41 +16,5 @@ staying simple, open, and elegant.
 Planned features include: CLI configuration preview, github based 
 configuration repositories, a web front end for additional access.
 
-```
-package with an installer script                                                                                               
-          +                                                                                                                  
-          |         +---------------+                                                                                        
-          |         |               |                       downloads 
-packages and install                  
-          +-------> |   git repos   +--+   
-<--------------------------------------------------------------------+       
-                    |               |  |                                                                        
-|       
-                    +---------------+  |                                                                        
-|       
-                                       v                                                                        
-+       
-                                                                                                       
-search for candidate  
-                              +--------------------------+                                        
-+-------------------------+
-                              |                          |                                        
-|                         |
-                              |       index server       |  
-+-------------------------------->    |   rice install vim-mlp  |
-                              |                          |            
-index.json                  |                         |
-                              +--------------------------+                                        
-+-------------------------+
-                                          ||||
-                                          ||||
-                              +--------------------------+
-                              |      http frontend       |
-                              +--------------------------+
-
-              server side                                                                                  
-client side
-```
-
 [![Gitter 
 chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/nih0/logos)
