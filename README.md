@@ -1,19 +1,56 @@
-# How to get this running
+<h1 align="center">
+<sub>
+<img src="http://i.imgur.com/FvQ3Lvx.png"
+      width="740">
+      <img src="http://i.imgur.com/QR1AaJi.png"
+      width="740">
+</sub>
+</h1>
+<strong>RiceDB</strong> will be a universal configuration file manager 
+designed to make it easy to obtain configurations for any application 
+that fit your individual needs.
 
-## Make ~/.rdb
+<strong>RiceDB</strong> seeks to follow the <strong>Arch Way</strong>, 
+staying simple, open, and elegant.
 
-Copy `config` to `~/.rdb/config`
+Planned features include: CLI configuration preview, github based 
+configuration repositories, a web front end for additional access.
 
-## Run a local server on port 8000
+```
+package with an installer script                                                                                               
+          +                                                                                                                  
+          |         +---------------+                                                                                        
+          |         |               |                       downloads 
+packages and install                  
+          +-------> |   git repos   +--+   
+<--------------------------------------------------------------------+       
+                    |               |  |                                                                        
+|       
+                    +---------------+  |                                                                        
+|       
+                                       v                                                                        
++       
+                                                                                                       
+search for candidate  
+                              +--------------------------+                                        
++-------------------------+
+                              |                          |                                        
+|                         |
+                              |       index server       |  
++-------------------------------->    |   rice install vim-mlp  |
+                              |                          |            
+index.json                  |                         |
+                              +--------------------------+                                        
++-------------------------+
+                                          ||||
+                                          ||||
+                              +--------------------------+
+                              |      http frontend       |
+                              +--------------------------+
 
-Run `python -m http.server` in the `riceDB` directory of this repo.  This serves up `test.zip` and simulates the "upstream".
+              server side                                                                                  
+client side
+```
 
-## Run another local server on port 9000
-
-Run `python server.py`.
-
-## Try out rice.py
-
-`cd src; python rice.py`
-
-Type something and hit enter.
+[![Gitter 
+chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/nih0/logos)
