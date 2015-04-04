@@ -73,12 +73,12 @@ class Rice(object):
             # Only the program name is mentionned
             # This returns to the user popular software
             # TODO: implement this later
-            print("Please specify a search term")
+            self.renderer.alert("Please specify a search term")
         elif args.create:
             # -c option used
                 self.create_rice(args.create[0])
         else:
-            print("You must run rice.py with inputs. Try rice.py -h if you're unsure how to use the program")
+            self.renderer.alert("You must run rice.py with inputs. Try rice.py -h if you're unsure how to use the program")
             exit()
                     
     def swap_rice(self, prog_name, rice_name):
@@ -90,8 +90,9 @@ class Rice(object):
                     self.create_rice(prog_name)
                 rice_installer.install()
             else:
-                print("This rice you tried to install does not exist locally, please try again")
+                self.renderer.alert("This rice you tried to install does not exist locally, please try again")
                 exit()
+            self.renderer.alert("Succesfully swapped to " + rice_name)
 
         # Takes a program and rice name, queries for results. If there is more than one it exits and gives an error
     def install_rice(self, prog_name, rice_name):
@@ -107,6 +108,7 @@ class Rice(object):
             else:
                 self.renderer.alert("Error, you did not specify a valid rice name, please try again")
                 exit()
+            self.renderer.alert("Succesfully installed " + rice_name)
 
     def search_rice(self, prog_name, keyword):
         search = query.Query(prog_name, keyword)
@@ -119,6 +121,7 @@ class Rice(object):
             self.create_rice(prog_name)
         rice_installer.install()
         self.update_localdb(selection.name, selection.program)
+        self.renderer.alert("Succesfully installed " + selection.name)
 
     def create_rice(self, prog_name):
         directory = ""
