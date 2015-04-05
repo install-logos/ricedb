@@ -16,5 +16,5 @@ staying simple, open, and elegant.
 Planned features include: CLI configuration preview, github based 
 configuration repositories, a web front end for additional access.
 
-[![Gitter 
+[![Build Status](https://travis-ci.org/install-logos/ricedb.svg?branch=master)](https://travis-ci.org/install-logos/ricedb)[![Gitter 
 chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/nih0/logos)
