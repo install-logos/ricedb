@@ -1,5 +1,5 @@
 #!/usr/bin/python -O
-import riceDB
+from ricedb import ricemain 
 import sys
 
-sys.exit(riceDB.Rice().run())
+sys.exit(ricemain.Rice().run())

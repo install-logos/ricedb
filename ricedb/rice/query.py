@@ -6,7 +6,7 @@
 import urllib.request
 import json
 import os
-from rice import error, util, package
+from . import error, util, package
 
 class Query(object):
     def __init__(self, program_name, search_term, local=False):
