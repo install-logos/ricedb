@@ -81,8 +81,10 @@ class Installer(object):
         os.remove(temp_file)
         self.check_files()
 
-    def install(self):
-        self.switch_out()
+    def install(self,force=False):
+        # Force install, ignoring current files installed
+        if not force:
+            self.switch_out()
         self.switch_in()
 
     # Checks if the currently installed rice is defined in riceDB, returns True if it is, False if not
