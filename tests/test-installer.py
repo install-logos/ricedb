@@ -29,7 +29,7 @@ class testInstaller(unittest.TestCase):
             self.test_url
         )
         i3_test.download()
-        i3_test.switch_in()
+        i3_test.install(True)
         self.assertFalse(os.path.exists(os.path.expanduser("~/.rdb/i3/test1/config")))
         self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/test1/install.json")))
 
