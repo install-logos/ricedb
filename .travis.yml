@@ -3,4 +3,4 @@ python:
       - "3.4"
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 # command to run tests, e.g. python setup.py test
-script: python ricedb/test.py 
+script: python tests/test-installer.py 
