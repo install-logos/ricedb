@@ -1,4 +1,4 @@
-from rice import installer
+from ricedb.rice import installer
 import unittest, os
 
 class testInstaller(unittest.TestCase):
@@ -19,8 +19,8 @@ class testInstaller(unittest.TestCase):
         )
 
         i3_test.download()
-        self.assertTrue(os.path.exists(os.expanduser("~/.rdb/i3/test1")))
-        self.assertTrue(os.path.isdir(os.expanduser("~/.rdb/i3/test1")))
+        self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/test1")))
+        self.assertTrue(os.path.isdir(os.path.expanduser("~/.rdb/i3/test1")))
 
     def test_install(self):
         i3_test = installer.Installer(
@@ -30,8 +30,8 @@ class testInstaller(unittest.TestCase):
         )
         i3_test.download()
         i3_test.install()
-        self.assertFalse(os.path.exists(os.expanduser("~/.rdb/i3/test1/config")))
-        self.assertTrue(os.path.exists(os.expanduser("~/.rdb/i3/test1/install.json")))
+        self.assertFalse(os.path.exists(os.path.expanduser("~/.rdb/i3/test1/config")))
+        self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/test1/install.json")))
 
     def tearDown(self):
         os.system("rm -rf ~/.rdb/i3/test1/")
