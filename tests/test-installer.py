@@ -1,6 +1,6 @@
 from ricedb.rice import installer
 from ricedb import ricemain
-import unittest, os
+import unittest, os, sys
 import argparse
 
 class testInstaller(unittest.TestCase):
