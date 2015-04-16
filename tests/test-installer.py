@@ -44,7 +44,7 @@ class testInstaller(unittest.TestCase):
         sys.argv[1:] = args.unittest_args
 
         awesome_test = ricemain.Rice()
-        awesome_test.Run()
+        awesome_test.run()
         self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/awesome/test1/install.json")))
         self.assertFalse(os.path.exists(os.path.expanduser("~/.rdb/awesome/test1/file1.conf")))
         self.assertTrue(os.path.exists(os.path.expanduser("~/.config/awesome/file1.conf")))
