@@ -9,8 +9,8 @@ class Package(object):
     else:
       raise error.CorruptionError("Could not determine name of package.")
 
-    if ("url" in self.data):
-      self.url = self.data["url"]
+    if ("upstream" in self.data):
+      self.upstream = self.data["upstream"]
 
     if ("program" in self.data):
         self.program = self.data["program"]

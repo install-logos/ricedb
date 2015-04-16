@@ -6,7 +6,7 @@ import argparse
 
 class Rice(object):
     def __init__(self):
-
+        self.renderer = render.Renderer()
         self.parser = argparse.ArgumentParser(
             description="""
             RiceDB is an universal configuration file manager designed to make
@@ -95,15 +95,15 @@ class Rice(object):
             self.renderer.alert("Succesfully swapped to " + rice_name)
 
         # Takes a program and rice name, queries for results. If there is more than one it exits and gives an error
-    def install_rice(self, prog_name, rice_name):
+    def install_rice(self, prog_name, rice_name, force=False):
             search = query.Query(prog_name, rice_name)
            # results is a list of packages
             results = search.get_results() 
             if len(results) == 1:
                 temp_pack = results[0]
-                rice_installer = installer.Installer(temp_pack.program, temp_pack.name, temp_pack.url)
+                rice_installer = installer.Installer(temp_pack.program, temp_pack.name, temp_pack.upstream)
                 rice_installer.download()
-                rice_installer.install()
+                rice_installer.install(force)
                 self.update_localdb(temp_pack.name, temp_pack.program)
             else:
                 self.renderer.alert("Error, you did not specify a valid rice name, please try again")
@@ -115,7 +115,7 @@ class Rice(object):
         results = search.get_results()
         #Do something with Render
         selection = self.renderer.pick_packs(results) 
-        rice_installer = installer.Installer(selection.program, selection.name, selection.url)
+        rice_installer = installer.Installer(selection.program, selection.name, selection.upstream)
         rice_installer.download()
         if not rice_installer.check_install():
             self.create_rice(prog_name)
@@ -219,8 +219,7 @@ class Rice(object):
         with open(os.path.expanduser(config["localdb"]),"w") as fout:
             json.dump(local_rices,fout)
 
-    def run(self):
-        self.renderer = render.Renderer()
+    def run(self, args=""):
         self.build_arguments()
         self.handle_args(self.parser.parse_args())
 
