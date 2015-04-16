@@ -1,5 +1,5 @@
 #!/bin/bash
 
 mkdir -p ~/.rdb/
-cp config ~/.rdb/
-cp localdatabase ~/.rdb/
+cp tests/config ~/.rdb/
+cp tests/localdatabase ~/.rdb/
