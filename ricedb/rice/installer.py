@@ -62,9 +62,9 @@ class Installer(object):
         if self.local:
             raise error.unentered_data_error("This is a local rice, it cannot be downloaded")
         if not (os.path.exists(util.RDBDIR) and os.path.isdir(util.RDBDIR)):
-            os.mkdir(util.RDBDIR)
+            os.makedirs(util.RDBDIR)
         if not (os.path.exists(self.prog_path)):
-            os.mkdir(self.prog_path)
+            os.makedirs(self.prog_path)
         if (os.path.exists(self.path) and os.path.isdir(self.path)):
             raise error.Error("Path ("+self.path+") already exists.")
         # Download the file
@@ -122,7 +122,7 @@ class Installer(object):
     def switch_in(self):
         os.chdir(self.path)
         if not (os.path.exists(self.conf_root)):
-            os.mkdir(self.conf_root)
+            os.makedirs(self.conf_root)
         for k in self.files.keys():
             if not (os.path.exists('./' + k)):
                 os.chdir(self.prog_path)
@@ -138,11 +138,5 @@ class Installer(object):
     def validate_dir(self,full_path):
         if full_path == "./":
             return
-        if full_path[len(full_path)-1]:
-            full_path = full_path[:len(full_path)-1]
         os.chdir(self.conf_root)
-        # Seems to bug up, should be checked
-        while not (os.path.split(full_path)[0] == '.'):
-            if not os.path.exists(full_path):
-                os.makedirs(full_path)
-            full_path = os.path.split(full_path)
+        os.makedirs(full_path)
