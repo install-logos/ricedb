@@ -18,14 +18,12 @@ class Query(object):
         if not local:
             try:
                 # Will be modified to accept the query once testing is complete
-                request = urllib.request.Request(config["db"])
+                request = urllib.request.Request(config["db"] + "/query/?q=" + search_term)
                 response = urllib.request.urlopen(request).read().decode('utf-8')
-                #print("Reponse is: " + response)
             except Exception as e:
                 raise error.Error("Could not connect to server %s: %s" % (config["db"], e))
             try:
-                # This line should be modified post testing
-                self.results = json.loads(response)["package"]
+                self.results = json.loads(response)
             except Exception as e:
                 raise error.corruption_error("Could not read JSON from server: %s" %(e))
         else:
@@ -36,12 +34,11 @@ class Query(object):
                 self.results = []
     def get_results(self):
         packs = []
+        if self.results == []:
+            return self.results
         if type(self.results) is dict:
             return [package.Package(self.results)]
         for i in self.results:
-            #print(i)
             packs.append(package.Package(i))
         return packs
-        #return self.results
-        # return [package.Package(i) for i in self.results]
 
