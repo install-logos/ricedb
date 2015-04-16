@@ -1,5 +1,7 @@
 from ricedb.rice import installer
-import unittest, os
+from ricedb import ricemain
+import unittest, os, sys
+import argparse
 
 class testInstaller(unittest.TestCase):
     """
@@ -30,8 +32,19 @@ class testInstaller(unittest.TestCase):
         )
         i3_test.download()
         i3_test.install(True)
-        self.assertFalse(os.path.exists(os.path.expanduser("~/.rdb/i3/test1/config")))
+        self.assertFalse(os.path.exists(os.path.expanduser("~/.rdb/i3/test1/file1.conf")))
         self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/test1/install.json")))
+
+    def test_sync(self):
+
+        awesome_test = ricemain.Rice()
+        awesome_test.install_rice("awesome","okrice",True)
+        self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/awesome/okrice/install.json")))
+        self.assertFalse(os.path.exists(os.path.expanduser("~/.rdb/awesome/okrice/file1.conf")))
+        self.assertTrue(os.path.exists(os.path.expanduser("~/.config/awesome/file1.conf")))
+
+        
+       # todo 
 
     def tearDown(self):
         os.system("rm -rf ~/.rdb/i3/test1/")
