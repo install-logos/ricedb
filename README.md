@@ -13,8 +13,14 @@ that fit your individual needs.
 <strong>RiceDB</strong> seeks to follow the <strong>Arch Way</strong>, 
 staying simple, open, and elegant.
 
-Planned features include: CLI configuration preview, github based 
-configuration repositories, a web front end for additional access.
+###Installation
+>git clone https://github.com/install-logos/ricedb.git
+
+>cd ricedb
+
+>make setup
+
+>sudo make install
 
 [![Build Status](https://travis-ci.org/install-logos/ricedb.svg?branch=master)](https://travis-ci.org/install-logos/ricedb)
 [![Gitter 
