@@ -54,11 +54,11 @@ class Rice(object):
         )
 
         self.parser.add_argument(
-        '-u', '--upload', nargs=1, type=str,
+        '-u', '--upload', nargs=3, type=str,
         help = """
         Sends a request to the riceDB server to index tje package located
         at the provided URL
-        USAGE: rice -u <url>
+        USAGE: rice -u <url> <program_name> <rice_name>
         """
         )
 
@@ -85,7 +85,7 @@ class Rice(object):
             # -c option used
                 self.create_rice(args.create[0])
         elif args.upload:
-            self.upload_package(args.upload[0])
+            self.upload_package(args.upload[0], args.upload[1], args.upload[2])
         else:
             self.renderer.alert("You must run rice.py with inputs. Try rice.py -h if you're unsure how to use the program")
             exit()
@@ -132,7 +132,8 @@ class Rice(object):
         self.update_localdb(selection.name, selection.program)
         self.renderer.alert("Succesfully installed " + selection.name)
 
-    def upload_package(self,upstream_url):
+    def upload_package(self, prog_name, rice_name, upstream_url):
+        self.create_metadata(prog_name, rice_name)
         with open(util.RDBDIR + "config") as config_file:
             try:
                 config = json.load(config_file)
@@ -145,14 +146,39 @@ class Rice(object):
         if r.reason == "OK":
             self.renderer.alert("URL was succesfully uploaded")
         else:
-            self.renderer.alert("The URL was not succesfully uploaded")
+            self.renderer.alert("The URL was not succesfully uploaded, reason: " + r.reason)
 
-
+    # There is a bit of a chicken egg problem here with making the git repo
+    # We want to create the github repo with all files present, but need the repo
+    # url for everything to be present. Solution is probably to just init repo,
+    # then get the URL based on the username + ricename, and possibly do a commit
+    def create_metadata(self, prog_name, rice_name):
+        rice_path = util.RDBDIR + "/" + prog_name + "/" + rice_name
+        if not os.path.exists(rice_path):
+            raise error.Error("The rice you chose to create metadata for does not exist")
+        os.chdir(rice_path)
+        ans = "y"
+        if os.path.exists("info.json"):
+            ans = self.renderer.prompt("Do you want to overwrite the existing metadata? y/n")
+        while not(ans == "y" or ans == "n"):
+            ans = self.renderer.prompt("Please respond with either y or n")
+        if ans == "y":
+            desc = self.renderer.prompt("What is the description for this rice?")
+            author = self.renderer.prompt("Who is the author of this rice?")
+            cover = self.renderer.prompt("Please provide a full link to a screenshot of this rice")
+            version = self.renderer.prompt("What is the version of this rice?")
+            upstream = self.renderer.prompt("What is the link to the github zip download for this rice")
+            quit = self.renderer.prompt("Please verify the information you typed, then press enter to continue, or type q then hit enter to exit")
+            if quit == "q":
+                exit()
+            with open("./info.json","w") as fout:
+                fout.write(json.dumps({"program":prog_name,"name":rice_name,"description":desc,"author":author,"cover":cover,"version":version,"upstream":upstream}))
+            self.renderer.alert("Metadata was succesfully written")
 
     def create_rice(self, prog_name, for_upload=False):
         directory = ""
         file_list = {}
-        installed = False
+        already_installed = False
         rice_name = self.renderer.prompt("Please specify the name of the rice")
         while os.path.exists(util.RDBDIR + "/" + prog_name + "/" + rice_name):
             answer = self.renderer.prompt("Please use a rice name that is not already used")
@@ -163,11 +189,8 @@ class Rice(object):
         if not os.path.exists(util.RDBDIR + '/' + prog_name):
             os.makedirs(util.RDBDIR + '/' + prog_name)
         os.chdir(util.RDBDIR + '/' + prog_name)
-        if not os.path.exists('./.active'):
-            with open('./.active','w') as fout:
-                fout.write(rice_name)
-        else:
-            installed = True
+        if os.path.exists('./.active'):
+            already_installed = True
             self.renderer.alert("Since you already have a rice installed, you will need to specify where the files of the rice you want to package are located as well as the location where the files should be installed. Please ensure that the folder where you're storing the configuration files mimics the true config files location in structure and file names")
             self.renderer.alert("You should also note that upon creation, the files which you specify will be moved into the ~/.hh/rdb/program-name/rice-name/ folder")
         directory = (self.renderer.prompt("Please specify the root directory of your config files e.g. for i3 type in ~/.i3/"))
@@ -225,11 +248,19 @@ class Rice(object):
         with open('install.json','w') as fout:
             json.dump(json_data, fout, ensure_ascii=False)
         self.update_localdb(rice_name, prog_name)
-        if installed:
-            for k in file_list.keys():
-                if not os.path.exists(loc + file_list[k] + k):
-                    raise error.corruption_error("Could not find the files specified in the rice")
-                os.rename(loc + file_list[k] + k, './' + k)
+        for k in file_list.keys():
+            if not os.path.exists(loc + file_list[k] + k):
+                raise error.corruption_error("Could not find the files specified in the rice")
+            os.rename(loc + file_list[k] + k, './' + k)
+        if not already_installed:
+            rice_installer = installer.Installer(
+                prog_name, 
+                rice_name
+            )
+            rice_installer.install(True)
+
+            
+
 
     def update_localdb(self, rice_name, prog_name):
         with open(util.RDBDIR + "config") as config_file:
