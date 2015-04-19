@@ -149,7 +149,7 @@ class Rice(object):
 
 
 
-    def create_rice(self, prog_name):
+    def create_rice(self, prog_name, for_upload=False):
         directory = ""
         file_list = {}
         installed = False

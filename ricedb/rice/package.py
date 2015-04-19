@@ -11,8 +11,6 @@ class Package(object):
 
         if ("upstream" in self.data):
             self.upstream = self.data["upstream"]
-        else:
-            raise error.CorruptionError("Could not determine the upstream url of the package")
 
         if ("program" in self.data):
             self.program = self.data["program"]
@@ -24,8 +22,6 @@ class Package(object):
 
         if ("description" in self.data):
             self.description = self.data["description"]
-        else:
-            raise error.CorruptionError("Could not determine description of package.")
 
         if ("author" in self.data):
             self.author = self.data["author"]

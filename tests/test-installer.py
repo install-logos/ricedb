@@ -32,7 +32,7 @@ class testInstaller(unittest.TestCase):
         )
         i3_test.download()
         i3_test.install(True)
-        self.assertFalse(os.path.exists(os.path.expanduser("~/.rdb/i3/test1/file1.conf")))
+        self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/test1/file1.conf")))
         self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/test1/install.json")))
         self.assertTrue(os.path.exists(os.path.expanduser("~/.i3/file2.conf")))
 
@@ -41,7 +41,7 @@ class testInstaller(unittest.TestCase):
         awesome_test = ricemain.Rice()
         awesome_test.install_rice("awesome","okrice",True)
         self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/awesome/okrice/install.json")))
-        self.assertFalse(os.path.exists(os.path.expanduser("~/.rdb/awesome/okrice/file1.conf")))
+        self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/awesome/okrice/file1.conf")))
         self.assertTrue(os.path.exists(os.path.expanduser("~/.config/awesome/file1.conf")))
 
         

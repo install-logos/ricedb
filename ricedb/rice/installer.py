@@ -117,7 +117,7 @@ class Installer(object):
         for k in old_files.keys():
             if not os.path.exists(old_conf_root + old_files[k] + k):
                 raise error.corruption_error("Could not find the files specified in the rice")
-            os.rename(old_conf_root + old_files[k] + k, './' + k)
+            os.remove(old_conf_root + old_files[k] + k)
 
     def switch_in(self):
         os.chdir(self.path)
@@ -126,10 +126,11 @@ class Installer(object):
         for k in self.files.keys():
             if not (os.path.exists('./' + k)):
                 os.chdir(self.prog_path)
-                switch_in(open('./.active').readline().rstrip())
+                # switch_in(open('./.active').readline().rstrip())
+                # We need to undo the switch out here
                 raise error.corruption_error("Nonexistant files referenced in install.json")
             self.validate_dir(self.files[k])
-            os.rename('./' + k, self.conf_root + self.files[k] + k)
+            os.symlink(os.path.abspath(k), self.conf_root + self.files[k] + k)
         os.chdir(self.prog_path)
         with open('./.active','w') as fout:
             fout.write(self.name)
