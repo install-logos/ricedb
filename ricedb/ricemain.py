@@ -1,8 +1,6 @@
 #!/bin/env python
-import json
-import os
+import json, os, argparse, requests
 from ricedb.rice import package, query, render, util, installer, error
-import argparse
 
 class Rice(object):
     def __init__(self):
@@ -55,6 +53,15 @@ class Rice(object):
         """
         )
 
+        self.parser.add_argument(
+        '-u', '--upload', nargs=1, type=str,
+        help = """
+        Sends a request to the riceDB server to index tje package located
+        at the provided URL
+        USAGE: rice -u <url>
+        """
+        )
+
     def handle_args(self, args):
         """
         Determines the appropriate APIs to invoke based
@@ -77,6 +84,8 @@ class Rice(object):
         elif args.create:
             # -c option used
                 self.create_rice(args.create[0])
+        elif args.upload:
+            self.upload_package(args.upload[0])
         else:
             self.renderer.alert("You must run rice.py with inputs. Try rice.py -h if you're unsure how to use the program")
             exit()
@@ -122,6 +131,23 @@ class Rice(object):
         rice_installer.install()
         self.update_localdb(selection.name, selection.program)
         self.renderer.alert("Succesfully installed " + selection.name)
+
+    def upload_package(self,upstream_url):
+        with open(util.RDBDIR + "config") as config_file:
+            try:
+                config = json.load(config_file)
+            except Exception as e:
+                raise error.corruption_error("Invalid JSON: %s" %(e))
+            try:
+                r = requests.post(config['db'] + '/upload/',data={'upstream':upstream_url})
+            except Exception as e:
+                raise error.Error("Could not connect to server %s: %s" % (config["db"], e))
+        if r.reason == "OK":
+            self.renderer.alert("URL was succesfully uploaded")
+        else:
+            self.renderer.alert("The URL was not succesfully uploaded")
+
+
 
     def create_rice(self, prog_name):
         directory = ""
