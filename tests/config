@@ -1,4 +1,4 @@
 {
-  "db" : "http://176.31.118.84:8000",
+  "db" : "http://rice.kagayaite.com",
   "localdb" : "~/.rdb/localdatabase"
 }
