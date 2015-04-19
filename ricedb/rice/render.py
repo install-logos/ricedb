@@ -130,6 +130,13 @@ class Renderer(object):
     def alert(self, message):
         print(message)
 
+    def isInt(self, check):
+        try:
+            int(check)
+            return True
+        except ValueError:
+            return False
+
     def prompt(self, message):
         print(message)
         return input()
@@ -142,7 +149,15 @@ class Renderer(object):
             counter+=1
         print("--------------------------------------------")
         print("Please select the rice you'd like to install")
-        choice = int(input())
+        choice = input()
+        if choice == "" or choice == "q":
+            exit()
+        else:
+            if self.isInt(choice):
+                choice = int(choice)
+            else:
+                self.alert("That's not a valid number")
+                exit()
         while choice < 0 or choice > counter:
             print('That is not a valid choice, please try again')
             choice = input()
