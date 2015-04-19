@@ -19,12 +19,18 @@ class Package(object):
 
         if ("cover" in self.data):
             self.cover = self.data["cover"]
+        else:
+            self.cover = ""
 
         if ("description" in self.data):
             self.description = self.data["description"]
+        else:
+            self.description = ""
 
         if ("author" in self.data):
             self.author = self.data["author"]
+        else:
+            self.author = ""
 
         if ("version" in self.data):
             self.version = self.data["version"]

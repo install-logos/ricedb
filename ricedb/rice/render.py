@@ -134,15 +134,15 @@ class Renderer(object):
         print(message)
         return input()
     # View for user to select a package from a list of options
-    def pick_packs(pack_list):
+    def pick_packs(self, pack_list):
         counter = 1
         for pack in pack_list:
-            print("%d %s/%s %s") % counter, pack['program'], pack['name'], pack['version']
-            print("%s\n") % pack['description']
+            print(str(counter) +" " + str(pack.program) + "/" + str(pack.name) + " " + str(pack.version))
+            print(str(pack.description) + "\n")
             counter+=1
         print("--------------------------------------------")
         print("Please select the rice you'd like to install")
-        choice = input()
+        choice = int(input())
         while choice < 0 or choice > counter:
             print('That is not a valid choice, please try again')
             choice = input()
