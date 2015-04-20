@@ -179,6 +179,7 @@ class Rice(object):
         directory = ""
         file_list = {}
         already_installed = False
+        loc = ""
         rice_name = self.renderer.prompt("Please specify the name of the rice")
         while os.path.exists(util.RDBDIR + "/" + prog_name + "/" + rice_name):
             answer = self.renderer.prompt("Please use a rice name that is not already used")
@@ -203,7 +204,7 @@ class Rice(object):
         unexpanded_directory = directory
         directory = os.path.expanduser(unexpanded_directory)
         os.chdir(directory)
-        if installed:
+        if already_installed:
             loc = os.path.expanduser(self.renderer.prompt("Please specify the folder where your config files are being held"))
             while not os.path.exists(loc):
                 answer = self.renderer.prompt("The specified directory does not exist. Try again or use q to quit")
@@ -222,7 +223,7 @@ class Rice(object):
                     file_list[name] = path
         else:
             answer = ""
-            config_file = os.path.expanduser(self.renderer.prompt("Please specify the location of a config file within the config folder, starting with ./ e.g. if you are specifyinga file called colors.config in some folder 'extra' in your config folder, type ./extra/colors.config"))
+            config_file = os.path.expanduser(self.renderer.prompt("Please specify the location of a config file within the config folder, starting with ./ e.g. if you are specifying a file called colors.config in some folder 'extra' in your config folder, type ./extra/colors.config"))
             while not answer == "n":
                 while not os.path.exists(config_file):
                     answer = self.renderer.prompt("The specified file does not exist. Try again or use q to quit, or n to continue")
@@ -249,9 +250,9 @@ class Rice(object):
             json.dump(json_data, fout, ensure_ascii=False)
         self.update_localdb(rice_name, prog_name)
         for k in file_list.keys():
-            if not os.path.exists(loc + file_list[k] + k):
+            if not os.path.exists(directory + file_list[k] + k):
                 raise error.corruption_error("Could not find the files specified in the rice")
-            os.rename(loc + file_list[k] + k, './' + k)
+            os.rename(directory + file_list[k] + k, './' + k)
         if not already_installed:
             rice_installer = installer.Installer(
                 prog_name, 
