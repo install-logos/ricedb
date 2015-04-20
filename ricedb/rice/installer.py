@@ -5,7 +5,10 @@
 
 import json
 import os
-import urllib.request
+try:
+    import urllib.request
+except ImportError:
+    import urllib
 import zipfile
 from . import error, util, render
 

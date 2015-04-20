@@ -2,8 +2,10 @@
 #
 # Defines the Query class.
 #
-
-import urllib.request
+try:
+    import urllib.request as request
+except ImportError:
+    import urllib2 as request
 import json
 import os
 from . import error, util, package
@@ -19,8 +21,8 @@ class Query(object):
         if not local:
             try:
                 # Will be modified to accept the query once testing is complete
-                request = urllib.request.Request(config["db"] + "/query/?q=" + search_term)
-                response = urllib.request.urlopen(request).read().decode('utf-8')
+                request = request.Request(config["db"] + "/query/?q=" + search_term)
+                response = request.urlopen(request).read().decode('utf-8')
             except Exception as e:
                 raise error.Error("Could not connect to server %s: %s" % (config["db"], e))
             try:
