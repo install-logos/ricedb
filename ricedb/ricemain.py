@@ -58,7 +58,7 @@ class Rice(object):
         help = """
         Sends a request to the riceDB server to index tje package located
         at the provided URL
-        USAGE: rice -u <url> <program_name> <rice_name>
+        USAGE: rice -u <program_name> <rice_name> <url>
         """
         )
 
@@ -133,7 +133,7 @@ class Rice(object):
         self.renderer.alert("Succesfully installed " + selection.name)
 
     def upload_package(self, prog_name, rice_name, upstream_url):
-        self.create_metadata(prog_name, rice_name)
+        self.create_metadata(prog_name, rice_name, upstream_url)
         with open(util.RDBDIR + "config") as config_file:
             try:
                 config = json.load(config_file)
@@ -152,7 +152,7 @@ class Rice(object):
     # We want to create the github repo with all files present, but need the repo
     # url for everything to be present. Solution is probably to just init repo,
     # then get the URL based on the username + ricename, and possibly do a commit
-    def create_metadata(self, prog_name, rice_name):
+    def create_metadata(self, prog_name, rice_name, upstream):
         rice_path = util.RDBDIR + "/" + prog_name + "/" + rice_name
         if not os.path.exists(rice_path):
             raise error.Error("The rice you chose to create metadata for does not exist")
@@ -167,7 +167,7 @@ class Rice(object):
             author = self.renderer.prompt("Who is the author of this rice?")
             cover = self.renderer.prompt("Please provide a full link to a screenshot of this rice")
             version = self.renderer.prompt("What is the version of this rice?")
-            upstream = self.renderer.prompt("What is the link to the github zip download for this rice")
+            # upstream = self.renderer.prompt("What is the link to the github zip download for this rice")
             quit = self.renderer.prompt("Please verify the information you typed, then press enter to continue, or type q then hit enter to exit")
             if quit == "q":
                 exit()
