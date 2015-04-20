@@ -133,20 +133,22 @@ class Rice(object):
         self.renderer.alert("Succesfully installed " + selection.name)
 
     def upload_package(self, prog_name, rice_name, upstream_url):
-        self.create_metadata(prog_name, rice_name, upstream_url)
-        with open(util.RDBDIR + "config") as config_file:
-            try:
-                config = json.load(config_file)
-            except Exception as e:
-                raise error.corruption_error("Invalid JSON: %s" %(e))
-            try:
-                r = requests.post(config['db'] + '/upload/',data={'upstream':upstream_url})
-            except Exception as e:
-                raise error.Error("Could not connect to server %s: %s" % (config["db"], e))
-        if r.reason == "OK":
-            self.renderer.alert("URL was succesfully uploaded")
+        if self.create_metadata(prog_name, rice_name, upstream_url):
+            with open(util.RDBDIR + "config") as config_file:
+                try:
+                    config = json.load(config_file)
+                except Exception as e:
+                    raise error.corruption_error("Invalid JSON: %s" %(e))
+                try:
+                    r = requests.post(config['db'] + '/upload/',data={'upstream':upstream_url})
+                except Exception as e:
+                    raise error.Error("Could not connect to server %s: %s" % (config["db"], e))
+            if r.reason == "OK":
+                self.renderer.alert("URL was succesfully uploaded")
+            else:
+                self.renderer.alert("The URL was not succesfully uploaded, reason: " + r.reason)
         else:
-            self.renderer.alert("The URL was not succesfully uploaded, reason: " + r.reason)
+            self.renderer.alert("Please commit commit these changes to the github repository and run the command again")
 
     # There is a bit of a chicken egg problem here with making the git repo
     # We want to create the github repo with all files present, but need the repo
@@ -174,6 +176,9 @@ class Rice(object):
             with open("./info.json","w") as fout:
                 fout.write(json.dumps({"program":prog_name,"name":rice_name,"description":desc,"author":author,"cover":cover,"version":version,"upstream":upstream}))
             self.renderer.alert("Metadata was succesfully written")
+            return False
+        else:
+            return True
 
     def create_rice(self, prog_name, for_upload=False):
         directory = ""
