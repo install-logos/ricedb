@@ -32,7 +32,7 @@ setup(
     platforms='GNU/Linux',
     license='GPL V3',
 
-    install_requires=[],
+    install_requires=['requests'],
     packages=['ricedb','ricedb/rice'],
     scripts=['rice']
 )

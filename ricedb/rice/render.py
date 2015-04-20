@@ -5,7 +5,10 @@
 
 import curses
 import curses.textpad
-import urllib.request
+try:
+    import urllib.request as request
+except ImportError:
+    import urllib as request
 import os
 from . import query, w3m, util
 import ast
@@ -115,7 +118,7 @@ class Renderer(object):
                 temp_file = util.RDBDIR + 'tmp'
                 #os.remove(temp_file)
                 # print(result.images[0])
-                urllib.request.urlretrieve(images_array[0], temp_file)
+                request.urlretrieve(images_array[0], temp_file)
                 self.draw_image(temp_file, curses.COLS - curses.COLS/2, SEARCHBAR_OFFSET, curses.COLS/2, curses.LINES - SEARCHBAR_OFFSET)
                 if self.first_pic:
                   self.first_pic = False
