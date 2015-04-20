@@ -15,7 +15,7 @@ staying simple, open, and elegant.
 
 ###Requirements
 Python3 - Possibly 2.7, but this has yet to be fully tested
-Requests - sudo pip install requests to obtain this module
+Requests - pip install requests to obtain this module
 
 ###Installation
 >git clone https://github.com/install-logos/ricedb.git
