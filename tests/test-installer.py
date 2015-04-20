@@ -39,10 +39,11 @@ class testInstaller(unittest.TestCase):
     def test_sync(self):
 
         awesome_test = ricemain.Rice()
-        awesome_test.install_rice("awesome","okrice",True)
-        self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/awesome/okrice/install.json")))
-        self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/awesome/okrice/file1.conf")))
-        self.assertTrue(os.path.exists(os.path.expanduser("~/.config/awesome/file1.conf")))
+        awesome_test.install_rice("i3","logos",True)
+        self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/logos/install.json")))
+        self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/logos/info.json")))
+        self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/logos/config")))
+
 
         
        # todo 

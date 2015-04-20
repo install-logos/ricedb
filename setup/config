@@ -1,4 +1,4 @@
 {
-  "db" : "http://rice.kagayaite.com",
+  "db" : "http://rice.kagayaite.com/",
   "localdb" : "~/.rdb/localdatabase"
 }

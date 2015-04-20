@@ -58,7 +58,7 @@ class Rice(object):
         help = """
         Sends a request to the riceDB server to index tje package located
         at the provided URL
-        USAGE: rice -u <url> <program_name> <rice_name>
+        USAGE: rice -u <program_name> <rice_name> <url>
         """
         )
 
@@ -133,7 +133,7 @@ class Rice(object):
         self.renderer.alert("Succesfully installed " + selection.name)
 
     def upload_package(self, prog_name, rice_name, upstream_url):
-        self.create_metadata(prog_name, rice_name)
+        self.create_metadata(prog_name, rice_name, upstream_url)
         with open(util.RDBDIR + "config") as config_file:
             try:
                 config = json.load(config_file)
@@ -152,7 +152,7 @@ class Rice(object):
     # We want to create the github repo with all files present, but need the repo
     # url for everything to be present. Solution is probably to just init repo,
     # then get the URL based on the username + ricename, and possibly do a commit
-    def create_metadata(self, prog_name, rice_name):
+    def create_metadata(self, prog_name, rice_name, upstream):
         rice_path = util.RDBDIR + "/" + prog_name + "/" + rice_name
         if not os.path.exists(rice_path):
             raise error.Error("The rice you chose to create metadata for does not exist")
@@ -167,7 +167,7 @@ class Rice(object):
             author = self.renderer.prompt("Who is the author of this rice?")
             cover = self.renderer.prompt("Please provide a full link to a screenshot of this rice")
             version = self.renderer.prompt("What is the version of this rice?")
-            upstream = self.renderer.prompt("What is the link to the github zip download for this rice")
+            # upstream = self.renderer.prompt("What is the link to the github zip download for this rice")
             quit = self.renderer.prompt("Please verify the information you typed, then press enter to continue, or type q then hit enter to exit")
             if quit == "q":
                 exit()
@@ -179,6 +179,7 @@ class Rice(object):
         directory = ""
         file_list = {}
         already_installed = False
+        loc = ""
         rice_name = self.renderer.prompt("Please specify the name of the rice")
         while os.path.exists(util.RDBDIR + "/" + prog_name + "/" + rice_name):
             answer = self.renderer.prompt("Please use a rice name that is not already used")
@@ -203,7 +204,7 @@ class Rice(object):
         unexpanded_directory = directory
         directory = os.path.expanduser(unexpanded_directory)
         os.chdir(directory)
-        if installed:
+        if already_installed:
             loc = os.path.expanduser(self.renderer.prompt("Please specify the folder where your config files are being held"))
             while not os.path.exists(loc):
                 answer = self.renderer.prompt("The specified directory does not exist. Try again or use q to quit")
@@ -222,7 +223,7 @@ class Rice(object):
                     file_list[name] = path
         else:
             answer = ""
-            config_file = os.path.expanduser(self.renderer.prompt("Please specify the location of a config file within the config folder, starting with ./ e.g. if you are specifyinga file called colors.config in some folder 'extra' in your config folder, type ./extra/colors.config"))
+            config_file = os.path.expanduser(self.renderer.prompt("Please specify the location of a config file within the config folder, starting with ./ e.g. if you are specifying a file called colors.config in some folder 'extra' in your config folder, type ./extra/colors.config"))
             while not answer == "n":
                 while not os.path.exists(config_file):
                     answer = self.renderer.prompt("The specified file does not exist. Try again or use q to quit, or n to continue")
@@ -249,9 +250,9 @@ class Rice(object):
             json.dump(json_data, fout, ensure_ascii=False)
         self.update_localdb(rice_name, prog_name)
         for k in file_list.keys():
-            if not os.path.exists(loc + file_list[k] + k):
+            if not os.path.exists(directory + file_list[k] + k):
                 raise error.corruption_error("Could not find the files specified in the rice")
-            os.rename(loc + file_list[k] + k, './' + k)
+            os.rename(directory + file_list[k] + k, './' + k)
         if not already_installed:
             rice_installer = installer.Installer(
                 prog_name, 
