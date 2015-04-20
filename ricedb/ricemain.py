@@ -112,6 +112,10 @@ class Rice(object):
                 temp_pack = results[0]
                 rice_installer = installer.Installer(temp_pack.program, temp_pack.name, temp_pack.upstream)
                 rice_installer.download()
+                if not rice_installer.check_install() and not force:
+                    self.renderer.alert("Warning, sync can only be used when ricedb is certain that it will not overwrite any files")
+                    self.renderer.alrt("Please run rice -c " + prog_name + " to save your default config for the program")
+                    exit()
                 rice_installer.install(force)
                 self.update_localdb(temp_pack.name, temp_pack.program)
             else:
