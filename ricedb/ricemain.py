@@ -220,8 +220,9 @@ class Rice(object):
                 if answer == "q":
                     exit()
                 else:
-                    loc = os.path.expanduser(answer)
-            os.chdir(loc)
+                     loc = os.path.expanduser(answer)
+            directory = loc
+            os.chdir(directory)
         select_files = self.renderer.prompt("Would you like to select individual files in the config folder(files are automatically detected otherwise)? y/n")
         while not (select_files == "y" or select_files == "n"):
             select_files = self.renderer.prompt("Please respond with y or n")
@@ -229,11 +230,14 @@ class Rice(object):
             for path, subdirs, files in os.walk("./"):
                 for name in files:
                     # This will use a ./, but this should be ok, though admittedly redundant
-                    file_list[name] = path
+                    if not path == "./":
+                        file_list[name] = path + "/"
+                    else:
+                        file_list[name] = path
         else:
             answer = ""
-            config_file = os.path.expanduser(self.renderer.prompt("Please specify the location of a config file within the config folder, starting with ./ e.g. if you are specifying a file called colors.config in some folder 'extra' in your config folder, type ./extra/colors.config"))
             while not answer == "n":
+                config_file = os.path.expanduser(self.renderer.prompt("Please specify the location of a config file within the config folder, starting with ./ e.g. if you are specifying a file called colors.config in some folder 'extra' in your config folder, type ./extra/colors.config"))
                 while not os.path.exists(config_file):
                     answer = self.renderer.prompt("The specified file does not exist. Try again or use q to quit, or n to continue")
                     if answer == "q":
@@ -260,6 +264,7 @@ class Rice(object):
         self.update_localdb(rice_name, prog_name)
         for k in file_list.keys():
             if not os.path.exists(directory + file_list[k] + k):
+                self.renderer.alert("Could not find " + directory + file_list[k] + k)
                 raise error.corruption_error("Could not find the files specified in the rice")
             os.rename(directory + file_list[k] + k, './' + k)
         if not already_installed:

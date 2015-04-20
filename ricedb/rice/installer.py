@@ -143,4 +143,6 @@ class Installer(object):
         if full_path == "./":
             return
         os.chdir(self.conf_root)
-        os.makedirs(full_path)
+        if not os.path.exists(full_path):
+            os.makedirs(full_path)
+        os.chdir(self.path)
