@@ -22,6 +22,19 @@ staying simple, open, and elegant.
 
 >sudo make install
 
+###Usage
+To search for a rice for a program: rice [program] [search term]
+
+To directly install a rice for a program: rice --sync [program] [name]
+
+To create a registered rice from existing config files: rice --create [program]
+
+To upload a rice to our database: rice --upload [program] [name] [URL to github repo]
+IMPORTAT: For this command to properly work, you should first initialize a repo in the folder ~/.rdb/[program]/[name] folder of the computer and upload it to github. You will then run this program once to generate metadata. Then enter into that folder, add the new info.json file and push it to your github. Then rerun this command to actually upload.
+
+Please note our database is only populated with a few default rices, we are looking for people to help contribute to this
+
+
 [![Build Status](https://travis-ci.org/install-logos/ricedb.svg?branch=master)](https://travis-ci.org/install-logos/ricedb)
 [![Gitter 
 chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/nih0/logos)
