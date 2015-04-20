@@ -11,6 +11,7 @@ from . import error, util, package
 class Query(object):
     def __init__(self, program_name, search_term, local=False):
         with open(util.RDBDIR + "config") as config_file:
+            self.program_name = program_name
             try:
                 config = json.load(config_file)
             except Exception as e:
@@ -39,6 +40,8 @@ class Query(object):
         if type(self.results) is dict:
             return [package.Package(self.results)]
         for i in self.results:
-            packs.append(package.Package(i))
+            # Temp fix, should be a server side thing eventually
+            if i['program'] == self.program_name:
+                packs.append(package.Package(i))
         return packs
 
