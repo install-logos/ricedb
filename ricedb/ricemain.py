@@ -152,7 +152,7 @@ class Rice(object):
             else:
                 self.renderer.alert("The URL was not succesfully uploaded, reason: " + r.reason)
         else:
-            self.renderer.alert("Please commit commit these changes to the github repository and run the command again")
+            self.renderer.alert("Please commit these changes to the github repository and run the command again")
 
     # There is a bit of a chicken egg problem here with making the git repo
     # We want to create the github repo with all files present, but need the repo
