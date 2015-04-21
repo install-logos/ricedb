@@ -131,8 +131,15 @@ class Rice(object):
         rice_installer = installer.Installer(selection.program, selection.name, selection.upstream)
         rice_installer.download()
         if not rice_installer.check_install():
-            self.create_rice(prog_name)
-        rice_installer.install()
+            ans = self.renderer.prompt("This appears to be your first time installing a riceDB rice for this program. Would you like to save the currently installed config or not? Please only select n if you do not have any files which might conflict with the ones to be installed. y/n")
+            while not (ans == "y" or ans == "n"):
+                ans = self.renderer.prompt("Please use either y or n for a response")
+            if ans == "y":
+                self.create_rice(prog_name)
+                rice_installer.install()
+            else:
+                rice_installer.install(True)
+
         self.update_localdb(selection.name, selection.program)
         self.renderer.alert("Succesfully installed " + selection.name)
 
