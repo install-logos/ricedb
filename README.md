@@ -21,7 +21,7 @@ Python3 - Possibly 2.7, but this has yet to be fully tested
 
 >cd ricedb
 
->make setup
+>make config
 
 >sudo make install
 
