@@ -1,4 +1,4 @@
-setup:
+config:
 	mkdir ~/.rdb
 	cp setup/config ~/.rdb/
 	cp setup/localdatabase ~/.rdb/

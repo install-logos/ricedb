@@ -146,6 +146,9 @@ class Renderer(object):
     # View for user to select a package from a list of options
     def pick_packs(self, pack_list):
         counter = 1
+        if len(pack_list) == 0:
+            print("Nothing was found for your specified rice, please try again")
+            exit()
         for pack in pack_list:
             print(str(counter) +" " + str(pack.program) + "/" + str(pack.name) + " " + str(pack.version))
             print(str(pack.description) + "\n")
@@ -161,6 +164,7 @@ class Renderer(object):
             else:
                 self.alert("That's not a valid number")
                 exit()
+        choice-=1
         while choice < 0 or choice > counter:
             print('That is not a valid choice, please try again')
             choice = input()
