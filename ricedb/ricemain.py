@@ -28,7 +28,7 @@ class Rice(object):
         self.parser.add_argument(
             'rice', nargs='*', type=str,
             help="""
-            Optionnal positionnal argument, used to look for packages with specified
+            Optional positional argument, used to look for packages with specified
             keywords for a specified program.
             USAGE: rice <program_name> [keyword1, keyword2, ...]]
             """
@@ -56,7 +56,7 @@ class Rice(object):
         self.parser.add_argument(
         '-u', '--upload', nargs=3, type=str,
         help = """
-        Sends a request to the riceDB server to index tje package located
+        Sends a request to the riceDB server to index the package located
         at the provided URL
         USAGE: rice -u <program_name> <rice_name> <url>
         """
