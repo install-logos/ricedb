@@ -6,9 +6,9 @@
 import json
 import os
 try:
-    import urllib.request
+    import urllib.request as request
 except ImportError:
-    import urllib
+    import urllib as request
 import zipfile
 from . import error, util, render
 
@@ -72,7 +72,7 @@ class Installer(object):
             raise error.Error("Path ("+self.path+") already exists.")
         # Download the file
         temp_file = self.prog_path + TMPEXTENSION
-        urllib.request.urlretrieve(self.url, temp_file)
+        request.urlretrieve(self.url, temp_file)
         # Check if the file downloaded successfully
         if not (os.path.exists(temp_file) or not zipfile.is_zipfile(temp_file)):
             raise error.corruption_error("The download is corrupted. Please verify the integrity of your rice_dB index file.")
