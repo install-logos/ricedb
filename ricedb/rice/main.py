@@ -30,7 +30,7 @@ class Rice(object):
         self.parser.add_argument(
             'rice', nargs='*', type=str,
             help="""
-            Optionnal positionnal argument, used to look for packages with specified
+            Optionnal positional argument, used to look for packages with specified
             keywords for a specified program.
             USAGE: rice <program_name> [keyword1, keyword2, ...]]
             """
