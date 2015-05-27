@@ -10,7 +10,7 @@ class testInstaller(unittest.TestCase):
     def setUp(self):
         self.test_prog = "i3"
         self.test_package = "test1"
-        self.test_url = "http://github.com/install-logos/example-repo/archive/master.zip"
+        self.test_url = "http://github.com/install-logos/example-repo.git"
 
 
     def test_download(self):

@@ -139,7 +139,8 @@ class Rice(object):
                 rice_installer.install()
             else:
                 rice_installer.install(True)
-
+        else:
+            rice_installer.install()         
         self.update_localdb(selection.name, selection.program)
         self.renderer.alert("Succesfully installed " + selection.name)
 
