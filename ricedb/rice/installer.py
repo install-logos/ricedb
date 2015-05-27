@@ -5,11 +5,7 @@
 
 import json
 import os
-try:
-    import urllib.request as request
-except ImportError:
-    import urllib as request
-import zipfile
+import subprocess
 from . import error, util, render
 
 TMPEXTENSION = "-tmp.zip"
@@ -71,17 +67,7 @@ class Installer(object):
         if (os.path.exists(self.path) and os.path.isdir(self.path)):
             raise error.Error("Path ("+self.path+") already exists.")
         # Download the file
-        temp_file = self.prog_path + TMPEXTENSION
-        request.urlretrieve(self.url, temp_file)
-        # Check if the file downloaded successfully
-        if not (os.path.exists(temp_file) or not zipfile.is_zipfile(temp_file)):
-            raise error.corruption_error("The download is corrupted. Please verify the integrity of your rice_dB index file.")
-        # Unzip the file
-        z = zipfile.ZipFile(temp_file)
-        for name in z.namelist():
-            z.extract(name, self.path)
-        self.validate_extraction()
-        os.remove(temp_file)
+        subprocess.call(["git","clone",self.url,self.path])
         self.check_files()
 
     def install(self,force=False):
