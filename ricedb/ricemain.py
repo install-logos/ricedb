@@ -166,7 +166,7 @@ class Rice(object):
         else:
             upstream_url = self.renderer.prompt("What is the URL of the repo?")
         if self.create_metadata(prog_name, rice_name, upstream_url):
-            if auto:
+            if auto == "y":
                 subprocess.call(["git","add","."])
                 subprocess.call(["git","commit","-m","'Added in RiceDB files'"])
                 subprocess.call(["git","push","--repo","https://" + uname + ":" + pwd + "@github.com/" + uname + "/" + rice_name + "-" + prog_name + ".git"])
