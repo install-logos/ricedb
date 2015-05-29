@@ -2,38 +2,22 @@ from . import error
 
 
 class Package(object):
+    """
+    Collect the data related to a package 
+    upon instantiation
+    """
+    
     def __init__(self, data):
         self.data = data
         self.images = None
-        if ("name" in self.data):
+        try:
             self.name = self.data["name"]
-        else:
+        except KeyError:
             raise error.CorruptionError("Could not determine name of package.")
 
-        if ("upstream" in self.data):
-            self.upstream = self.data["upstream"]
-
-        if ("program" in self.data):
-            self.program = self.data["program"]
-        else:
-            raise error.CorruptionError("Could not determine the program of the package")
-
-        if ("cover" in self.data):
-            self.cover = self.data["cover"]
-        else:
-            self.cover = ""
-
-        if ("description" in self.data):
-            self.description = self.data["description"]
-        else:
-            self.description = ""
-
-        if ("author" in self.data):
-            self.author = self.data["author"]
-        else:
-            self.author = ""
-
-        if ("version" in self.data):
-            self.version = self.data["version"]
-        else:
-            self.version = ""
+        self.upstream = self.data.get("upstream")
+        self.program = self.data.get("program")
+        self.cover = self.data.get("cover", "")
+        self.description = self.data.get("description", "")
+        self.author = self.data.get("author", "")
+        self.version = self.data("version", "")

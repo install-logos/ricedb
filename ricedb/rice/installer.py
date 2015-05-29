@@ -23,7 +23,7 @@ class Installer(object):
         self.url = url
         self.prog_path = util.RDBDIR + self.program + '/'
         self.path = self.prog_path + self.name + '/'
-        if url == "":
+        if url:
             self.check_files()
 
     def check_files(self): 
