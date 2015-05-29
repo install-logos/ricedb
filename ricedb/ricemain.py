@@ -162,14 +162,16 @@ class Rice(object):
             upstream_url = r.json()['clone_url']
             os.chdir(rice_path)
             subprocess.call(["git","init"])
-            subprocess.call(["git","remote","add","origin",upstream_url])
+            subprocess.call(["git","remote","add","origin","https://" + uname + ":" + pwd + "@github.com/" + uname + "/" + rice_name + "-" + prog_name + ".git"])
         else:
             upstream_url = self.renderer.prompt("What is the URL of the repo?")
         if self.create_metadata(prog_name, rice_name, upstream_url):
             if auto == "y":
                 subprocess.call(["git","add","."])
                 subprocess.call(["git","commit","-m","'Added in RiceDB files'"])
-                subprocess.call(["git","push","--repo","https://" + uname + ":" + pwd + "@github.com/" + uname + "/" + rice_name + "-" + prog_name + ".git"])
+                #subprocess.call(["git","push","--repo","https://" + uname + ":" + pwd + "@github.com/" + uname + "/" + rice_name + "-" + prog_name + ".git"])
+                #self.renderer.alert("Please input your github credentials to push to the new repository")
+                subprocess.call(["git","push","origin","master"])
             else:
                 os.chdir(rice_path)
                 subprocess.call(["git","add","."])
