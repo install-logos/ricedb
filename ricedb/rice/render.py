@@ -12,6 +12,7 @@ except ImportError:
 import os
 from . import query, w3m, util
 import ast
+import getpass
 
 SEARCHBAR_OFFSET = 2
 SEARCHLEFT_OFFSET = 8
@@ -143,6 +144,9 @@ class Renderer(object):
     def prompt(self, message):
         print(message)
         return input()
+
+    def get_pass(self, message):
+        return getpass.getpass(message)
     # View for user to select a package from a list of options
     def pick_packs(self, pack_list):
         counter = 1

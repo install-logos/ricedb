@@ -1,5 +1,5 @@
 #!/bin/env python
-import json, os, argparse, requests
+import json, os, argparse, requests, subprocess
 from ricedb.rice import package, query, render, util, installer, error
 
 class Rice(object):
@@ -54,11 +54,11 @@ class Rice(object):
         )
 
         self.parser.add_argument(
-        '-u', '--upload', nargs=3, type=str,
+        '-u', '--upload', nargs=2, type=str,
         help = """
         Sends a request to the riceDB server to index the package located
         at the provided URL
-        USAGE: rice -u <program_name> <rice_name> <url>
+        USAGE: rice -u <program_name> <rice_name>
         """
         )
 
@@ -85,7 +85,7 @@ class Rice(object):
             # -c option used
                 self.create_rice(args.create[0])
         elif args.upload:
-            self.upload_package(args.upload[0], args.upload[1], args.upload[2])
+            self.upload_package(args.upload[0], args.upload[1])
         else:
             self.renderer.alert("You must run rice.py with inputs. Try rice.py -h if you're unsure how to use the program")
             exit()
@@ -144,8 +144,39 @@ class Rice(object):
         self.update_localdb(selection.name, selection.program)
         self.renderer.alert("Succesfully installed " + selection.name)
 
-    def upload_package(self, prog_name, rice_name, upstream_url):
+    def upload_package(self, prog_name, rice_name):
+        rice_path = util.RDBDIR + "/" + prog_name + "/" + rice_name
+        auto = self.renderer.prompt("Would you like to automatically create a Github repo? y/n");
+        while not (auto == "y" or auto == "n"):
+            auto = self.renderer.prompt("Please use either y or n for a response")
+        if(auto == "y"):
+            uname = self.renderer.prompt("Please input your Github username")
+            pwd = self.renderer.get_pass("Please input your Github password:")
+            req_info = '{"name":"' + rice_name + "-" + prog_name + '"}'
+            print(req_info)
+            r = requests.post("https://api.github.com/user/repos",auth=(uname,pwd),data=req_info)
+            if r.status_code != 201:
+                self.renderer.alert("Repo creation failed, please ensure that you specified a valid repository name and used correct credentials")
+                self.renderer.alert(r.text)
+                exit()
+            upstream_url = r.json()['clone_url']
+            os.chdir(rice_path)
+            subprocess.call(["git","init"])
+            subprocess.call(["git","remote","add","origin",upstream_url])
+        else:
+            upstream_url = self.renderer.prompt("What is the URL of the repo?")
         if self.create_metadata(prog_name, rice_name, upstream_url):
+            if auto:
+                subprocess.call(["git","add","."])
+                subprocess.call(["git","commit","-m","'Added in RiceDB files'"])
+                subprocess.call(["git","push","--repo","https://" + uname + ":" + pwd + "@github.com/" + uname + "/" + rice_name + "-" + prog_name + ".git"])
+            else:
+                os.chdir(rice_path)
+                subprocess.call(["git","add","."])
+                subprocess.call(["git","commit","-m","'Added in RiceDB files'"])
+                self.renderer.alert("Commiting changes manually, please enter your credentials to do a git push")
+                subprocess.call(["git","push","origin","master"])
+
             with open(util.RDBDIR + "config") as config_file:
                 try:
                     config = json.load(config_file)
@@ -188,8 +219,9 @@ class Rice(object):
             with open("./info.json","w") as fout:
                 fout.write(json.dumps({"program":prog_name,"name":rice_name,"description":desc,"author":author,"cover":cover,"version":version,"upstream":upstream}))
             self.renderer.alert("Metadata was succesfully written")
-            return False
+            return True
         else:
+            #Reserve this for certain exceptions
             return True
 
     def create_rice(self, prog_name, for_upload=False):
