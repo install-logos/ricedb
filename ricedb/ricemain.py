@@ -4,7 +4,7 @@ import os
 import argparse
 import requests
 import subprocess
-from ricedb.rice import package, query, render, util, installer, error
+from ricedb.rice import query, render, util, installer, error
 
 
 class Rice(object):
@@ -137,7 +137,7 @@ class Rice(object):
                                                  temp_pack.upstream)
             rice_installer.download()
             if not rice_installer.check_install() and not force:
-                self.renderer.alert(("Warning, you have unregistered rices for ",
+                self.renderer.alert(("Warning, you an unregistered rice for ",
                                      "the specified program on your computer"))
                 self.renderer.alert("Please run rice -c " + prog_name +
                                     "to save your configs for the program")
