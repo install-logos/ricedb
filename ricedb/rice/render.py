@@ -137,7 +137,7 @@ class Renderer(object):
 
 
     def prompt(self, message):
-        return raw_input(message+"\n")
+        return input(message+"\n")
 
     def get_pass(self, message):
         return getpass.getpass(message)
