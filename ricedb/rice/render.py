@@ -119,7 +119,7 @@ class Renderer(object):
 
     def prompt(self, message):
         print(message)
-        return sys.stdin.readline()
+        return (sys.stdin.readline()).rstrip()
 
     def get_pass(self, message):
         return getpass.getpass(message)
