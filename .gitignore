@@ -54,6 +54,7 @@ docs/_build/
 
 # PyBuilder
 target/
+.idea/
 
 # Editor temporary files
 *.swp
