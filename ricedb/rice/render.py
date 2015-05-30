@@ -118,7 +118,7 @@ class Renderer(object):
         print(message)
 
     def prompt(self, message):
-        print(message+"\n")
+        print(message)
         return sys.stdin.readline()
 
     def get_pass(self, message):
