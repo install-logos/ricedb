@@ -1,53 +1,37 @@
-# rice/render.py
-#
-# Defines the Render class.
-#
+"""Defines the Render class."""
 
+import ast
 import curses
-import curses.textpad
+import getpass
+import os
+import sys
+
+from . import query, w3m, util
+
+# python 2 compatibility shim
 try:
     import urllib.request as request
 except ImportError:
     import urllib as request
-import os
-from . import query, w3m, util
-import ast
-import getpass
 
 SEARCHBAR_OFFSET = 2
 SEARCHLEFT_OFFSET = 8
 
+
 class Renderer(object):
+    """
+    Manages display for the terminal UI
+    """
     def __init__(self, w3m_binary='/usr/lib/w3m/w3mimgdisplay'):
-        """
-        self.scr = curses.initscr()
-        curses.noecho()         # don't echo characters
-        curses.cbreak()         # no key buffering
-        self.scr.keypad(True) # let curses handle keys
-        self.scr.clear()
-        """
+
         self.results = None
         self.first_pic = True
         self.w3m_enabled = False
 
         if os.path.exists(w3m_binary):
-          self.w3m = w3m.W3MImage_display(w3m_binary)
-          self.w3m_enabled = True
-        """ 
-        # Create a search box
-        self.scr.addstr(0, 0, "Search:")
-        self.textarea = curses.newwin(1, curses.COLS - 2, 0, SEARCHLEFT_OFFSET)
-        self.text = curses.textpad.Textbox(self.textarea)
-        self.text.stripspaces = True
+            self.w3m = w3m.W3MImage_display(w3m_binary)
+            self.w3m_enabled = True
 
-        # Create result box delimiter
-        for i in range(curses.COLS - 1):
-          self.scr.insch(1, i, curses.ACS_HLINE)
-        self.scr.refresh()
-
-        # Set selection index to search
-        self.index = -1
-        """
     def handle_scroll(self):
         k = self.scr.getkey()
         self.end()
@@ -56,20 +40,18 @@ class Renderer(object):
 
     def loop(self):
         if self.index == -1:
-          try:
-            self.textarea.erase()
-            query_string = self.text.edit().strip()
-            if query_string == "exit":
-                self.end()
-                return 1
-            results = query.Query(query_string).get_results()
-            # print(results)
-            self.populate(results)
-            #self.index = 0 # Set selection to first result
-          except Exception as e:
-            print(e)
+            try:
+                self.textarea.erase()
+                query_string = self.text.edit().strip()
+                if query_string == "exit":
+                    self.end()
+                    return 1
+                results = query.Query(query_string).get_results()
+                self.populate(results)
+            except Exception as e:
+                print(e)
         else:
-          self.handle_scroll()
+            self.handle_scroll()
         return 0
 
     # This will draw into a box defined by the passed in parameters
@@ -79,7 +61,7 @@ class Renderer(object):
         # Image dimensions
         iw, ih = util.get_image_dimensions(temp_file)
         # Box dimensions
-        bw, bh = w * fw, h *fh
+        bw, bh = w * fw, h * fh
         
         # Scale the image to the box
         if iw > ih:
@@ -101,8 +83,8 @@ class Renderer(object):
           self.w3m.draw(temp_file, 1, x, y, w=iw, h=ih)
         else:
           self.w3m.redraw(temp_file, 1, x, y, w=iw, h=ih)
+
     def populate(self, results):
-        # print("Populate called w/ " + str(results))
         if not self.results == None:
           del self.results
         self.results = curses.newpad(max(len(results), curses.LINES - 1), curses.COLS//2)
@@ -131,18 +113,21 @@ class Renderer(object):
           i += 1
 
         self.results.noutrefresh(0, 0, SEARCHBAR_OFFSET, 0, curses.LINES-1, curses.COLS-1)
+
     def alert(self, message):
         print(message)
 
-
-
     def prompt(self, message):
-        return input(message+"\n")
+        print(message+"\n")
+        return sys.stdin.readline()
 
     def get_pass(self, message):
         return getpass.getpass(message)
-    # View for user to select a package from a list of options
+
     def pick_packs(self, pack_list):
+        """
+        View for user to select a package from a list of options
+        """
         counter = 1
         if len(pack_list) == 0:
             print("Nothing was found for your specified rice, please try again")
@@ -175,4 +160,3 @@ class Renderer(object):
         self.scr.keypad(False)
         curses.echo()
         curses.endwin()
-
