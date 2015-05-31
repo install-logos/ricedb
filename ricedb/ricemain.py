@@ -4,7 +4,7 @@ import os
 import argparse
 import requests
 import subprocess
-from ricedb.rice import query, render, util, installer, error
+from ricedb.rice import query, render, util, installer, error, gitrice
 
 
 class Rice(object):
@@ -194,12 +194,13 @@ class Rice(object):
         for program <prog_name>.
         """
         rice_path = util.RDBDIR + "/" + prog_name + "/" + rice_name
+        git = gitrice.GitManager()
         auto = self.renderer.prompt("""Would you like to automatically
                                     create a Github repo? y/n""")
         while not (auto == "y" or auto == "n"):
                 auto = self.renderer.prompt(("Please use either y or n "
                                             "for a response"))
-        if(auto == "y"):
+        if auto == "y":
             uname = self.renderer.prompt("Please input your Github username")
             pwd = self.renderer.get_pass("Please input your Github password:")
             req_info = '{"name":"' + rice_name + "-" + prog_name + '"}'
@@ -214,28 +215,26 @@ class Rice(object):
                 exit()
             upstream_url = r.json()['clone_url']
             os.chdir(rice_path)
-            subprocess.call(["git", "init"])
-            subprocess.call(["git", "remote", "add", "origin",
-                             "https://" + uname + ":" + pwd + "@github.com/" +
-                             uname + "/" + rice_name + "-" +
-                             prog_name + ".git"])
+            git.init()
+
+            remote_url = "https://{}:{}@github.com/{}/{}.git".format(uname, pwd, uname, rice_name)
+            git.remote_add("origin", remote_url)
+
         else:
             upstream_url = self.renderer.prompt("What is the URL of the repo?")
         self.create_metadata(prog_name, rice_name, upstream_url)
         if auto == "y":
-            subprocess.call(["git", "add", "."])
-            subprocess.call(["git", "commit", "-m",
-                             "'Added in RiceDB files'"])
-            subprocess.call(["git", "push", "origin", "master"])
+            git.add()
+            git.commit_all("Added Ricedb Files")
+            git.push("origin", "master")
         else:
             os.chdir(rice_path)
-            subprocess.call(["git", "add", "."])
-            subprocess.call(["git", "commit", "-m",
-                             "'Added in RiceDB files'"])
+            git.add()
+            git.commit_all("Added Ricedb Files")
             self.renderer.alert(("Commiting changes manually, "
                                  "please enter your credentials "
                                  "to do a git push"))
-            subprocess.call(["git", "push", "origin", "master"])
+            git.push("origin", "master")
 
         with open(util.RDBDIR + "config") as config_file:
             try:
