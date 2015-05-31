@@ -18,13 +18,13 @@ class GitManager(object):
         """
         equivalent command to git init
         """
-        system("git init")
+        system("git init > /dev/null 2>&1")
 
     def remote_add(self, remote_name, url):
         """
         Adds a new git remote
         """
-        cmd = "git remote add {} {}".format(remote_name, url)
+        cmd = "git remote add {} {} > /dev/null 2>&1".format(remote_name, url)
         system(cmd)
 
     def push(self, repo, branch):
@@ -39,7 +39,7 @@ class GitManager(object):
         Adds files to a git repository.
         adds the current directory by default
         """
-        cmd = "git add {}".format(file)
+        cmd = "git add {} > /dev/null 2>&1".format(file)
         system(cmd)
 
     def commit_all(self, message):
@@ -47,5 +47,5 @@ class GitManager(object):
         Commits all files changed in
         the git repository
         """
-        cmd = 'git commit -am "{}" '.format(message)
+        cmd = 'git commit -am "{}" > /dev/null 2>&1'.format(message)
         system(cmd)

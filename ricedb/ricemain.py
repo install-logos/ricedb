@@ -195,16 +195,16 @@ class Rice(object):
         """
         rice_path = util.RDBDIR + "/" + prog_name + "/" + rice_name
         git = gitrice.GitManager()
-        auto = self.renderer.prompt("""Would you like to automatically
-                                    create a Github repo? y/n""")
+        auto = self.renderer.prompt(("Would you like to automatically "
+                                     "create a Github repo? y/n"))
         while not (auto == "y" or auto == "n"):
                 auto = self.renderer.prompt(("Please use either y or n "
                                             "for a response"))
         if auto == "y":
             uname = self.renderer.prompt("Please input your Github username")
             pwd = self.renderer.get_pass("Please input your Github password:")
-            req_info = '{"name":"' + rice_name + "-" + prog_name + '"}'
-            print(req_info)
+            repo_name = rice_name + "-" + prog_name
+            req_info = '{"name":"' + repo_name + '"}'
             r = requests.post("https://api.github.com/user/repos",
                               auth=(uname, pwd), data=req_info)
             if r.status_code != 201:
@@ -217,7 +217,7 @@ class Rice(object):
             os.chdir(rice_path)
             git.init()
 
-            remote_url = "https://{}:{}@github.com/{}/{}.git".format(uname, pwd, uname, rice_name)
+            remote_url = "https://{}:{}@github.com/{}/{}.git".format(uname, pwd, uname, repo_name)
             git.remote_add("origin", remote_url)
 
         else:
@@ -248,9 +248,9 @@ class Rice(object):
                 raise error.Error("Could not connect to server %s: %s" %
                                   (config["db"], e))
         if r.reason == "OK":
-            self.renderer.alert("URL was succesfully uploaded")
+            self.renderer.alert("The rice was succesfully uploaded!")
         else:
-            self.renderer.alert(("The URL was not succesfully "
+            self.renderer.alert(("The rice was not succesfully "
                                  "uploaded, reason: ") + r.reason)
 
     def create_metadata(self, prog_name, rice_name, upstream):
