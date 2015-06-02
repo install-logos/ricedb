@@ -43,7 +43,7 @@ class testInstaller(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/logos/config")))
 
     def tearDown(self):
-        os.system("rm -rf ~/.rdb/i3")
+        os.system("rm -rf ~/.rdb/i3/test1/")
 # Add in Query Return Test
 
 # Add in Package Initialization Test
