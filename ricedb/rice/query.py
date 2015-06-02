@@ -11,13 +11,10 @@ import os
 from . import error, util, package
 
 class Query(object):
+
     def __init__(self, program_name, search_term, local=False):
-        with open(util.RDBDIR + "config") as config_file:
-            self.program_name = program_name
-            try:
-                config = json.load(config_file)
-            except Exception as e:
-                raise error.corruption_error("Invalid JSON: %s" %(e))
+        self.program_name = program_name
+        config = self.get_config_data()
         if not local:
             try:
                 # Will be modified to accept the query once testing is complete
@@ -32,15 +29,26 @@ class Query(object):
         else:
             rices = json.load(open(os.path.expanduser(config["localdb"])))
             if search_term in rices[program_name]:
-                self.results = [{"name":search_term,"program":program_name}]
+                self.results = [{"name": search_term, "program": program_name}]
             else:
                 self.results = []
+
+    @staticmethod
+    def get_config_data():
+        with open(util.RDBDIR + "config") as config_file:
+            try:
+                return json.load(config_file)
+            except Exception as e:
+                raise error.corruption_error("Invalid JSON: %s" % e)
+
     def get_results(self):
         packs = []
-        if self.results == []:
+        if self.results:
             return self.results
+
         if type(self.results) is dict:
             return [package.Package(self.results)]
+
         for i in self.results:
             # Temp fix, should be a server side thing eventually
             if i['program'] == self.program_name:

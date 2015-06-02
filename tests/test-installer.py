@@ -1,7 +1,6 @@
 from ricedb.rice import installer
 from ricedb import ricemain
-import unittest, os, sys
-import argparse
+import unittest, os
 
 class testInstaller(unittest.TestCase):
     """
@@ -11,7 +10,6 @@ class testInstaller(unittest.TestCase):
         self.test_prog = "i3"
         self.test_package = "test1"
         self.test_url = "http://github.com/install-logos/example-repo.git"
-
 
     def test_download(self):
         i3_test = installer.Installer(
@@ -39,23 +37,18 @@ class testInstaller(unittest.TestCase):
     def test_sync(self):
 
         awesome_test = ricemain.Rice()
-        awesome_test.install_rice("i3","logos",True)
+        awesome_test.install_rice("i3", "logos", True)
         self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/logos/install.json")))
         self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/logos/info.json")))
         self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/logos/config")))
 
-
-        
-       # todo 
-
     def tearDown(self):
-        os.system("rm -rf ~/.rdb/i3/test1/")
+        os.system("rm -rf ~/.rdb/i3")
 # Add in Query Return Test
 
 # Add in Package Initialization Test
 
 # Entire Pipeline should be tested
 
-if __name__=="__main__":
+if __name__ == "__main__":
     unittest.main()
-
