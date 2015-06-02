@@ -194,6 +194,11 @@ class Rice(object):
         for program <prog_name>.
         """
         rice_path = util.RDBDIR + "/" + prog_name + "/" + rice_name
+        
+        if not os.path.isdir(rice_path):
+            self.renderer.alert("The rice you have specified does not exist!")
+            exit()
+
         git = gitrice.GitManager()
         auto = self.renderer.prompt(("Would you like to automatically "
                                      "create a Github repo? y/n"))
