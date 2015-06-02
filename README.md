@@ -42,3 +42,4 @@ Please note our database is only populated with a few default rices, we are look
 [![Build Status](https://travis-ci.org/install-logos/ricedb.svg?branch=master)](https://travis-ci.org/install-logos/ricedb)
 [![Gitter 
 chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/nih0/logos)
+[![QuantifiedCode](https://www.quantifiedcode.com/api/v1/project/7a5332abe0bb46d2b7f84faf94028fc5/badge.svg)](https://www.quantifiedcode.com/app/project/7a5332abe0bb46d2b7f84faf94028fc5)
