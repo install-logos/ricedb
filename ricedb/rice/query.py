@@ -28,10 +28,9 @@ class Query(object):
                 raise error.corruption_error("Could not read JSON from server: %s" %(e))
         else:
             rices = json.load(open(os.path.expanduser(config["localdb"])))
+            self.results = []
             if search_term in rices[program_name]:
-                self.results = [{"name": search_term, "program": program_name}]
-            else:
-                self.results = []
+                self.results.append({"name": search_term, "program": program_name})
 
     @staticmethod
     def get_config_data():

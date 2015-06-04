@@ -24,23 +24,15 @@ class testInstaller(unittest.TestCase):
 
     def test_install(self):
         i3_test = installer.Installer(
-            self.test_prog, 
-            self.test_package, 
+            self.test_prog,
+            self.test_package,
             self.test_url
         )
         i3_test.download()
-        i3_test.install(True)
+        i3_test.install()
         self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/test1/file1.conf")))
         self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/test1/install.json")))
         self.assertTrue(os.path.exists(os.path.expanduser("~/.i3/file2.conf")))
-
-    def test_sync(self):
-
-        awesome_test = ricemain.Rice()
-        awesome_test.install_rice("i3", "logos", True)
-        self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/logos/install.json")))
-        self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/logos/info.json")))
-        self.assertTrue(os.path.exists(os.path.expanduser("~/.rdb/i3/logos/config")))
 
     def tearDown(self):
         os.system("rm -rf ~/.rdb/i3/test1/")
