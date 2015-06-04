@@ -67,10 +67,10 @@ class Installer(object):
         if (os.path.exists(self.path) and os.path.isdir(self.path)):
             raise error.Error("Path ("+self.path+") already exists.")
         # Download the file
-        subprocess.call(["git","clone",self.url,self.path])
+        subprocess.call(["git", "clone", self.url, self.path])
         self.check_files()
 
-    def install(self,force=False):
+    def install(self, force=False):
         # Force install, ignoring current files installed
         if not force:
             self.switch_out()
