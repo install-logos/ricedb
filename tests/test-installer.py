@@ -1,5 +1,4 @@
 from ricedb.rice import installer
-from ricedb import ricemain
 import unittest, os
 
 class testInstaller(unittest.TestCase):
