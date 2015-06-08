@@ -9,3 +9,6 @@ config:
 	fi ;
 install:
 	python setup.py install
+
+test:
+	cd tests/ && python -m unittest discover
