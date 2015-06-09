@@ -49,3 +49,7 @@ class GitManager(object):
         """
         cmd = 'git commit -am "{}" > /dev/null 2>&1'.format(message)
         system(cmd)
+
+    def clone(self, repo, location=""):
+        cmd = 'git clone {} {}'.format(repo, location)
+        system(cmd)
