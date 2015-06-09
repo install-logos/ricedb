@@ -25,4 +25,4 @@ class Package(object):
         self.cover = self.data.get("cover", "")
         self.description = self.data.get("description", "")
         self.author = self.data.get("author", "")
-        self.version = self.data("version", "")
+        self.version = self.data.get("version", "")

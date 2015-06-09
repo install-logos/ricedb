@@ -135,7 +135,7 @@ class Rice(object):
             install_package = results.pop()
             rice_installer = installer.Installer(install_package)
             rice_installer.download()
-            
+
             if not rice_installer.check_install() and not force:
                 self.renderer.alert(("Warning, you are installing an unregistered rice for ",
                                      "the specified program on your computer"))

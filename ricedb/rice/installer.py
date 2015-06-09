@@ -18,7 +18,7 @@ class Installer(object):
         self.local = False
 
         # Get information from the package
-        self.name = package.rice_name
+        self.name = package.name
         self.program = package.program
         self.url = package.upstream
 
