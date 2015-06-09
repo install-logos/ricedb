@@ -1,12 +1,10 @@
-# rice/package.py
-#
-# Defines the Package class.
-#
+""" Class for handling downloading and installing a rice"""
 
 import json
 import os
-import subprocess
-from . import error, util, render
+
+from . import error, util, gitrice
+
 
 TMPEXTENSION = "-tmp.zip"
 INSTALL = "install.json"
@@ -16,18 +14,24 @@ class Installer(object):
     Handles downloading and installing rices for a specific package
     Deals with all functionality concerning configurations/packages
     """
-    def __init__(self, prog_name, rice_name, url=""):
+    def __init__(self, package):
         self.local = False
-        self.name = rice_name
-        self.program = prog_name
-        self.url = url
+
+        # Get information from the package
+        self.name = package.name
+        self.program = package.program
+        self.url = package.upstream
+
         self.prog_path = util.RDBDIR + self.program + '/'
         self.path = self.prog_path + self.name + '/'
-        if url == "":
+
+        # if we aren't provided an upstream url,
+        # we're installing a local package
+        if not self.url:
+            self.local = True
             self.check_files()
 
-    def check_files(self): 
-        self.local = True
+    def check_files(self):
         self.install_file = self.path + INSTALL
         if not (os.path.exists(self.install_file) and os.path.isfile(self.install_file)):
             raise error.corruption_error("Package has no install file.")
@@ -35,7 +39,7 @@ class Installer(object):
             try:
                 self.install_data = json.load(f)
             except Exception as e:
-                raise error.corruption_error("Could not read JSON: %s" %(e))
+                raise error.corruption_error("Could not read JSON: %s" % e)
             if "files" in self.install_data:
                 self.files = self.install_data['files']
             else:
@@ -67,7 +71,8 @@ class Installer(object):
         if (os.path.exists(self.path) and os.path.isdir(self.path)):
             raise error.Error("Path ("+self.path+") already exists.")
         # Download the file
-        subprocess.call(["git", "clone", self.url, self.path])
+        git = gitrice.GitManager()
+        git.clone(self.url, self.path)
         self.check_files()
 
     def install(self, force=False):
