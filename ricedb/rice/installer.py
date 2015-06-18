@@ -123,7 +123,7 @@ class Installer(object):
                 # switch_in(open('./.active').readline().rstrip())
                 # We need to undo the switch out here
                 raise error.corruption_error("Nonexistant files referenced in install.json")
-            self.validate_dir(rice_file['filename'])
+            self.validate_dir(rice_file['location'])
             os.symlink(os.path.abspath(rice_file['filename']), self.conf_root + rice_file['location'] + rice_file['filename'])
         os.chdir(self.prog_path)
         with open('./.active', 'w') as fout:
