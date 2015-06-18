@@ -41,7 +41,7 @@ class Installer(object):
             except Exception as e:
                 raise error.corruption_error("Could not read JSON: %s" % e)
             if "files" in self.install_data:
-                self.files = self.install_data['files']
+                self.files = self.install_data.get('files', [])
             else:
                 raise error.corruption_error("Could not read the files in the JSON")
             if "conf_root" in self.install_data:
@@ -117,20 +117,20 @@ class Installer(object):
         os.chdir(self.path)
         if not (os.path.exists(self.conf_root)):
             os.makedirs(self.conf_root)
-        for k in self.files.keys():
-            if not (os.path.exists('./' + k)):
+        for rice_file in self.files:
+            if not (os.path.exists('./' + rice_file['filename'])):
                 os.chdir(self.prog_path)
                 # switch_in(open('./.active').readline().rstrip())
                 # We need to undo the switch out here
                 raise error.corruption_error("Nonexistant files referenced in install.json")
-            self.validate_dir(self.files[k])
-            os.symlink(os.path.abspath(k), self.conf_root + self.files[k] + k)
+            self.validate_dir(rice_file['location'])
+            os.symlink(os.path.abspath(rice_file['filename']), self.conf_root + rice_file['location'] + rice_file['filename'])
         os.chdir(self.prog_path)
-        with open('./.active','w') as fout:
+        with open('./.active', 'w') as fout:
             fout.write(self.name)
 
     # Makes folders in config_root if necessary
-    def validate_dir(self,full_path):
+    def validate_dir(self, full_path):
         if full_path == "./":
             return
         os.chdir(self.conf_root)

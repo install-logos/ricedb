@@ -4,7 +4,7 @@ import os
 import argparse
 import requests
 import subprocess
-from ricedb.rice import query, render, util, installer, error, gitrice
+from ricedb.rice import query, render, util, installer, error, gitrice, package
 
 
 class Rice(object):
@@ -109,6 +109,12 @@ class Rice(object):
         search = query.Query(prog_name, rice_name, True)
         result = search.get_results()
         if result:
+            rice_package = package.Package(
+                {
+                    "name": rice_name,
+                    "program": prog_name
+                }
+            )
             rice_installer = installer.Installer(prog_name, rice_name)
             if not rice_installer.check_install():
                 self.create_rice(prog_name)
@@ -422,9 +428,14 @@ class Rice(object):
                 raise error.corruption_error("Could not find specified files")
             os.rename(directory + file_list[k] + k, "./" + k)
         if not already_installed:
+            rice_package = package.Package(
+                {
+                    "name": rice_name,
+                    "program": prog_name
+                }
+            )
             rice_installer = installer.Installer(
-                prog_name,
-                rice_name
+                rice_package
             )
             rice_installer.install(True)
 
