@@ -96,9 +96,7 @@ class Rice(object):
         elif args.upload:
             self.upload_package(args.upload[0], args.upload[1])
         else:
-            self.renderer.alert(("RiceDB should be run with arguments. "
-                                 "Try rice.py -h if you are unsure about "
-                                 "how to use the program"))
+            self.parser.print_help()
             exit()
 
     def swap_rice(self, prog_name, rice_name):
