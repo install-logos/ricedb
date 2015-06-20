@@ -86,10 +86,10 @@ class Rice(object):
             # Program name + keyword specified
                     self.search_rice(args.rice[0], args.rice[1])
         elif len(args.rice) == 1:
-            # Only the program name is mentionned
+            # Only the program name is mentioned
             # This returns to the user popular software
             # TODO: implement this later
-            self.renderer.alert("Please specify a search term")
+            self.show_available_rices(args.rice.pop())
         elif args.create:
             # -c option used
                 self.create_rice(args.create[0])
@@ -99,6 +99,29 @@ class Rice(object):
             self.parser.print_help()
             exit()
 
+    def show_available_rices(self, prog_name):
+        """
+        Shows the user a list of available
+        rices for a program
+        """
+        active_rice = installer.Installer.get_active_rice(prog_name)
+        config_file = util.RDBDIR + "config"
+        with open(config_file) as conf:
+            config = json.load(conf)
+            local_db = os.path.expanduser(config["localdb"])
+
+        with open(local_db) as ldb_file:
+            local_rices = json.load(ldb_file).get(prog_name)
+            if local_rices:
+                print "Installed rices for {}".format(prog_name)
+                for rice in local_rices:
+                    rice_string = "\t{}".format(rice)
+                    if rice == active_rice:
+                        rice_string += " *this is the currently active rice"
+                    print rice_string
+            else:
+                print "there are no installed rices for {}".format(prog_name)
+
     def swap_rice(self, prog_name, rice_name):
         """
         Swaps the currently active rice for a given program
@@ -106,6 +129,7 @@ class Rice(object):
         """
         search = query.Query(prog_name, rice_name, True)
         result = search.get_results()
+
         if result:
             rice_package = package.Package(
                 {
@@ -113,14 +137,13 @@ class Rice(object):
                     "program": prog_name
                 }
             )
+
             rice_installer = installer.Installer(rice_package)
-            if not rice_installer.check_install():
-                self.create_rice(prog_name)
-                rice_installer.install()
+            if not rice_installer.has_active_rice():
+                rice_installer.install(True)
             else:
-                self.renderer.alert(("This rice you tried to install "
-                                     "does not exist locally, "
-                                     "please try again"))
+                rice_installer.install()
+
                 exit()
             self.renderer.alert("Succesfully swapped to " + rice_name)
 
@@ -140,7 +163,7 @@ class Rice(object):
             rice_installer = installer.Installer(install_package)
             rice_installer.download()
 
-            if not rice_installer.check_install() and not force:
+            if not rice_installer.has_active_rice() and not force:
                 self.renderer.alert(("Warning, you are installing an unregistered rice for ",
                                      "the specified program on your computer"))
                 self.renderer.alert("Please run rice -c " + prog_name +
@@ -169,7 +192,7 @@ class Rice(object):
                                              selection.name,
                                              selection.upstream)
         rice_installer.download()
-        if not rice_installer.check_install():
+        if not rice_installer.has_active_rice():
             ans = self.renderer.prompt(("This appears to be your first time "
                                         "installing a riceDB rice for this "
                                         "program. Would you like to save "
@@ -304,7 +327,7 @@ class Rice(object):
         as a ricedb rice for a given program
         """
         directory = ""
-        file_list = {}
+        file_list = []
         already_installed = False
         loc = ""
         rice_name = self.renderer.prompt("Please specify the name of the rice")
@@ -375,9 +398,10 @@ class Rice(object):
                     # This will use a ./, but this should be ok,
                     # though admittedly redundant
                     if not path == "./":
-                        file_list[name] = path + "/"
+                        file_entry = {'filename': name, 'location': path + "/"}
                     else:
-                        file_list[name] = path
+                        file_entry = {'filename': name, 'location': path}
+                    file_list.append(file_entry)
         else:
             answer = ""
             while not answer == "n":
@@ -403,7 +427,10 @@ class Rice(object):
                         config_file = os.path.expanduser(answer)
                 else:
                     folder_loc, name = os.path.split(config_file)
-                    file_list[name] = folder_loc + "/"
+
+                    file_list.append({'filename': name,
+                                      'location': folder_loc + "/"})
+
                     answer = self.renderer.prompt(("Would you like "
                                                    "to select "
                                                    "another file? y/n"))
@@ -413,18 +440,21 @@ class Rice(object):
         os.chdir(util.RDBDIR + "/" + prog_name)
         os.mkdir(rice_name)
         os.chdir(rice_name)
-        json_data = {}
-        json_data["files"] = file_list
-        json_data["conf_root"] = unexpanded_directory
+
+        json_data = {
+            'files': file_list,
+            'conf_root': unexpanded_directory
+        }
+
         with open("install.json", "w") as fout:
             json.dump(json_data, fout, ensure_ascii=False)
         self.update_localdb(rice_name, prog_name)
-        for k in file_list.keys():
-            if not os.path.exists(directory + file_list[k] + k):
+        for rice_file in file_list:
+            if not os.path.exists(directory + rice_file['location'] + rice_file['filename']):
                 self.renderer.alert("Could not find " +
-                                    directory + file_list[k] + k)
+                                    directory + rice_file['location'] + rice_file['filename'])
                 raise error.corruption_error("Could not find specified files")
-            os.rename(directory + file_list[k] + k, "./" + k)
+            os.rename(directory + rice_file['location'] + rice_file['filename'], "./" + rice_file['filename'])
         if not already_installed:
             rice_package = package.Package(
                 {

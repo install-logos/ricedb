@@ -81,7 +81,7 @@ class Installer(object):
             self.switch_out()
         self.switch_in()
 
-    def check_install(self):
+    def has_active_rice(self):
         """
         Checks if the currently installed rice is defined in riceDB,
         returns True if it is, False if not
@@ -89,37 +89,54 @@ class Installer(object):
         os.chdir(self.prog_path)
         # If there isn't an active riceDB rice, create a new local rice
         return (os.path.exists('./.active') and os.path.isfile('./.active'))
-        
+
+    @staticmethod
+    def get_active_rice(program_name):
+        program_path = util.RDBDIR + program_name + '/'
+        os.chdir(program_path)
+        return open('./.active').readline().rstrip()
+
     def switch_out(self):
+        """
+        Removes the old files for a rice in preparation to install a new one
+        :return:
+        """
         os.chdir(self.prog_path)
         # If there isn't an active riceDB rice, create a new local rice
         current_name = open('./.active').readline().rstrip()
         os.chdir(self.prog_path + current_name)
         old_install_file = self.prog_path + current_name + '/' + INSTALL
+
         if not (os.path.exists(old_install_file) and os.path.isfile(old_install_file)):
             raise error.corruption_error("Package has no install file.")
+
         with open(old_install_file) as f:
             try:
                 old_install_data = json.load(f)
             except Exception as e:
                 raise error.corruption_error("Could not read JSON: %s" %(e))
             if "files" in old_install_data:
-                old_files = old_install_data['files']
+                old_files = old_install_data.get('files')
             else:
                 raise error.corruption_error("Could not read the files in the JSON")
             if "conf_root" in old_install_data:
                 old_conf_root = os.path.expanduser(old_install_data["conf_root"])
             else:
                 raise error.corruption_error("Could not read the config root in the JSON")
-        for k in old_files.keys():
-            if not os.path.exists(old_conf_root + old_files[k] + k):
-                raise error.corruption_error("Could not find the files specified in the rice")
-            os.remove(old_conf_root + old_files[k] + k)
+        for rice_file in old_files:
+            # I'm justifying this by reasoning
+            # we actually don't care if the old files aren't there,
+            # we're just deleting them anyway
+            try:
+                os.remove(old_conf_root + rice_file['location'] + rice_file['filename'])
+            except OSError:
+                pass
 
     def switch_in(self):
         os.chdir(self.path)
         if not (os.path.exists(self.conf_root)):
             os.makedirs(self.conf_root)
+
         for rice_file in self.files:
             if not (os.path.exists('./' + rice_file['filename'])):
                 os.chdir(self.prog_path)
@@ -127,7 +144,9 @@ class Installer(object):
                 # We need to undo the switch out here
                 raise error.corruption_error("Nonexistant files referenced in install.json")
             self.validate_dir(rice_file['location'])
+
             os.symlink(os.path.abspath(rice_file['filename']), self.conf_root + rice_file['location'] + rice_file['filename'])
+
         os.chdir(self.prog_path)
         with open('./.active', 'w') as fout:
             fout.write(self.name)
