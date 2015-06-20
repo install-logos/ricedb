@@ -115,7 +115,7 @@ class Rice(object):
                     "program": prog_name
                 }
             )
-            rice_installer = installer.Installer(prog_name, rice_name)
+            rice_installer = installer.Installer(rice_package)
             if not rice_installer.check_install():
                 self.create_rice(prog_name)
                 rice_installer.install()
