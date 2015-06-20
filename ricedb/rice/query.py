@@ -29,7 +29,7 @@ class Query(object):
         else:
             rices = json.load(open(os.path.expanduser(config["localdb"])))
             self.results = []
-            if search_term in rices[program_name]:
+            if search_term in rices.get(program_name, {}):
                 self.results.append({"name": search_term, "program": program_name})
 
     @staticmethod

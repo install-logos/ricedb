@@ -81,8 +81,11 @@ class Installer(object):
             self.switch_out()
         self.switch_in()
 
-    # Checks if the currently installed rice is defined in riceDB, returns True if it is, False if not
     def check_install(self):
+        """
+        Checks if the currently installed rice is defined in riceDB,
+        returns True if it is, False if not
+        """
         os.chdir(self.prog_path)
         # If there isn't an active riceDB rice, create a new local rice
         return (os.path.exists('./.active') and os.path.isfile('./.active'))
