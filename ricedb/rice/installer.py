@@ -93,7 +93,12 @@ class Installer(object):
     @staticmethod
     def get_active_rice(program_name):
         program_path = util.RDBDIR + program_name + '/'
-        os.chdir(program_path)
+
+        try:
+            os.chdir(program_path)
+        except OSError:
+            return
+
         return open('./.active').readline().rstrip()
 
     def switch_out(self):
