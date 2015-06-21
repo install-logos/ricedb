@@ -113,14 +113,14 @@ class Rice(object):
         with open(local_db) as ldb_file:
             local_rices = json.load(ldb_file).get(prog_name)
             if local_rices:
-                print "Installed rices for {}".format(prog_name)
+                self.renderer.alert("Installed rices for {}".format(prog_name))
                 for rice in local_rices:
                     rice_string = "\t{}".format(rice)
                     if rice == active_rice:
                         rice_string += " *this is the currently active rice"
-                    print rice_string
+                    self.renderer.alert(rice_string)
             else:
-                print "there are no installed rices for {}".format(prog_name)
+                self.renderer.alert("there are no installed rices for {}".format(prog_name))
 
     def swap_rice(self, prog_name, rice_name):
         """
