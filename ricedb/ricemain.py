@@ -235,6 +235,12 @@ class Rice(object):
         if auto == "y":
             uname = self.renderer.prompt("Please input your Github username")
             pwd = self.renderer.get_pass("Please input your Github password:")
+            # TODO: Check if the uname/pwd are valid
+            if not "github.com" in open(os.path.expanduser('~/.netrc')).read():
+                with open(os.path.expanduser('~/.netrc'), 'a') as fout:
+                   fout.write("machine github.com\n")
+                   fout.write("\tlogin " + uname + "\n")
+                   fout.write("\tpassword " + pwd + "\n")
             repo_name = rice_name + "-" + prog_name
             req_info = '{"name":"' + repo_name + '"}'
             r = requests.post("https://api.github.com/user/repos",
@@ -249,7 +255,7 @@ class Rice(object):
             os.chdir(rice_path)
             git.init()
 
-            remote_url = "https://{}:{}@github.com/{}/{}.git".format(uname, pwd, uname, repo_name)
+            remote_url = "https://github.com/{}/{}.git".format(uname, repo_name)
             git.remote_add("origin", remote_url)
 
         else:
