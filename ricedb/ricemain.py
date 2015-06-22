@@ -450,11 +450,13 @@ class Rice(object):
             json.dump(json_data, fout, ensure_ascii=False)
         self.update_localdb(rice_name, prog_name)
         for rice_file in file_list:
-            if not os.path.exists(directory + rice_file['location'] + rice_file['filename']):
+            if not os.path.exists(directory + rice_file['location'] + rice_file['filename']) and not os.path.islink(directory + rice_file['location'] + rice_file['filename']):
                 self.renderer.alert("Could not find " +
                                     directory + rice_file['location'] + rice_file['filename'])
                 raise error.corruption_error("Could not find specified files")
-            os.rename(directory + rice_file['location'] + rice_file['filename'], "./" + rice_file['filename'])
+            if not os.path.exists(rice_file['location']):
+                os.makedirs(rice_file['location'])
+            os.rename(directory + rice_file['location'] + rice_file['filename'], rice_file['location'] + rice_file['filename'])
         if not already_installed:
             rice_package = package.Package(
                 {
