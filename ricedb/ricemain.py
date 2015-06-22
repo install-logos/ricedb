@@ -454,7 +454,9 @@ class Rice(object):
                 self.renderer.alert("Could not find " +
                                     directory + rice_file['location'] + rice_file['filename'])
                 raise error.corruption_error("Could not find specified files")
-            os.rename(directory + rice_file['location'] + rice_file['filename'], "./" + rice_file['filename'])
+            if not os.path.exists(rice_file['location']):
+                os.mkdir(rice_file['location'])
+            os.rename(directory + rice_file['location'] + rice_file['filename'], rice_file['location'] + rice_file['filename'])
         if not already_installed:
             rice_package = package.Package(
                 {
