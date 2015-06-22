@@ -143,7 +143,7 @@ class Installer(object):
             os.makedirs(self.conf_root)
 
         for rice_file in self.files:
-            if not (os.path.exists('./' + rice_file['filename'])):
+            if not (os.path.exists(rice_file['location'] + rice_file['filename'])) and not os.path.islink(rice_file['location'] + rice_file['filename']):
                 os.chdir(self.prog_path)
                 # switch_in(open('./.active').readline().rstrip())
                 # We need to undo the switch out here
