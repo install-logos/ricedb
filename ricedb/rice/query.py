@@ -41,16 +41,17 @@ class Query(object):
                 raise error.corruption_error("Invalid JSON: %s" % e)
 
     def get_results(self):
+        """
+        Formats the query results from Query()
+        as package objects
+
+        Returns:
+            list of Package objects
+        """
         packs = []
-        if self.results:
-            return self.results
-
-        if type(self.results) is dict:
-            return [package.Package(self.results)]
-
         for i in self.results:
             # Temp fix, should be a server side thing eventually
-            if i['program'] == self.program_name:
+            if i.get('program') == self.program_name:
                 packs.append(package.Package(i))
         return packs
 
