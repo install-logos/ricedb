@@ -13,26 +13,26 @@ that fit your individual needs.
 <strong>RiceDB</strong> seeks to follow the <strong>Arch Way</strong>, 
 staying simple, open, and elegant.
 
-###Requirements
+### Requirements
 Python3 - Possibly 2.7, but this has yet to be fully tested
 
-###Installation
->git clone https://github.com/install-logos/ricedb.git
+### Installation
+    git clone https://github.com/install-logos/ricedb.git
 
->cd ricedb
+    cd ricedb
 
->make config
+    make config
 
->sudo make install
+    sudo make install
 
-###Usage
-To search for a rice for a program: rice [program] [search term]
+### Usage
+To search for a rice for a program: `rice [program] [search term]`
 
-To directly install a rice for a program: rice --sync [program] [name]
+To directly install a rice for a program: `rice --sync [program] [name]`
 
-To create a registered rice from existing config files: rice --create [program]
+To create a registered rice from existing config files: `rice --create [program]`
 
-To upload a rice to our database: rice --upload [program] [name]
+To upload a rice to our database: `rice --upload [program] [name]`
 
 Please note, the uploading functionality requires you to have a github account. A repo for the rice will be automatically created, you simply need an existing github account.
 
